@@ -99,6 +99,8 @@ overflow: auto;
   background-color: #F5F5F5;
   /*height: 100%;*/
   /*height: 500px;*/
+  font-weight: bold;
+  text-transform: capitalize;
 
 }
 .panel {
@@ -152,6 +154,7 @@ overflow: auto;
   margin: 0 auto;
   margin-top: 20px;
 
+
 }
 .dropdown-menu {
   left: inherit;
@@ -160,6 +163,20 @@ overflow: auto;
 /*.list-column li:last-child {
   margin-bottom: 60px;
 }*/
+
+.licard {
+  position: relative;
+  
+
+
+
+
+}
+.editCard {
+  position: absolute;
+  right: 11%;
+  top:6%;
+}
 
 
 @media (min-width: 0) {

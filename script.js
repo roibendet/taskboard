@@ -6,17 +6,12 @@ const addListBtn = document.getElementById('btnClm');
 refreshEvents();
 
 
-function removeList(event) {
-
-  console.log('was removed');
-
-}
-
 function addList() {
   const emptyList = document.createElement('div');
   emptyList.className = 'list-column';
   emptyList.innerHTML = listTemplate;
   container.insertBefore(emptyList, addListBtn);
+
   refreshEvents(emptyList);
 }
 
@@ -42,7 +37,7 @@ function editName() {
 // Unhide Input Element
   input.className = 'panel-heading';
   if (currentElm.textContent === '') {
-    currentElm.textContent = 'Untitled list'
+    currentElm.textContent = 'UntitleNamed list'
   }
   input.value = currentElm.textContent;
   // Focus the Input Element
@@ -55,21 +50,21 @@ function editName() {
   function eventhandeler(event) {
     currentElm.focus();
     if (event.keyCode === ENTER) {
-           currentElm.textContent = input.value;
-       currentElm.className = 'p-header panel-heading header-list';
-       input.className = 'hidden';
+      currentElm.textContent = input.value;
+      currentElm.className = 'p-header panel-heading header-list';
+      input.className = 'hidden';
       if (currentElm.textContent === '') {
         currentElm.textContent = 'Untitled list'
       }
-   //   eventhandeler();
+      //   eventhandeler();
 
     }
 
 
-    if (event.type === evtblur ) {
-    currentElm.textContent = input.value;
-    currentElm.className = 'p-header panel-heading header-list';
-    input.className = 'hidden';
+    if (event.type === evtblur) {
+      currentElm.textContent = input.value;
+      currentElm.className = 'p-header panel-heading header-list';
+      input.className = 'hidden';
       if (currentElm.textContent === '') {
         currentElm.textContent = 'Untitled list'
       }
@@ -77,55 +72,53 @@ function editName() {
   }
 }
 
+
 function dropdownEdit() {
 
   const currentBtn = event.target;
+
   const currentP = currentBtn.parentNode;
+
   const currentUl = currentP.querySelector('ul');
-  currentUl.style.display = 'block';
+
   const delBtn = currentUl.querySelector('li a');
-console.log(delBtn);
-  // refreshEvents(currentBtn);
-  delBtn.addEventListener('click', () => {
-
-    console.log(delBtn);
-    const subtitle = currentP.parentNode;
-    const title = subtitle.querySelector('p').innerHTML;
-    const isdelete = confirm(`Deleting , ${title}, Are u sure ?`);
-    if (isdelete) {
-      const currentList = subtitle.parentNode;
-      const main = currentList.parentNode;
-      main.removeChild(currentList);
-      console.log(main);
-    }
-    if (isdelete === false) {
-      currentUl.style.display = 'none';
-    }
 
 
-    /*  currentBtn.addEventListener('blur', () => {
-     console.log('blurrr');
-     currentUl.style.display = 'none';
+  if (currentUl.style.display = 'none') {
 
-     });*/
+    currentUl.style.display = 'block';
+  }
 
-    // console.log(delBtn);
+  if (currentUl.style.display = 'block' && event.type === evtblur) {
 
-    /*  currentBtn.addEventListener('blur', (ev) => {
-     currentUl.style.display = 'none';
-     });*/
+    currentUl.style.display = 'none'
+    // refreshEvents(currentBtn);
 
-//  console.log(currentBtn);
-    //  const currentP = currentBtn.parentNode;
-
-  });
+  }
 }
 
+function removeList(target) {
 
+  const currentBtn = event.target;
+//  const currentP = currentBtn.parentNode;
+  const currentUl = currentBtn.closest('ul');
+  //console.log(temp);
+  if (event.type === evtClick) {
 
+    // Catch the header
+    const currentHeader = currentBtn.closest('header');
+    const titleName = currentHeader.querySelector('p').innerHTML;
 
-
-
+    const isdelete = confirm(`Deleting , ${titleName}, Are u sure ?`);
+    if (isdelete) {
+      const currentList = currentBtn.closest('.list-column');
+      const main = currentBtn.closest('main');
+      main.removeChild(currentList);
+    }
+    // Else
+    currentUl.style.display = 'none';
+  }
+}
 
 
 // Helpers
@@ -140,31 +133,40 @@ function refreshEvents(target) {
   const Btns = targetP.getElementsByClassName('editbtn');
 
   for (let btn of Btns) {
-    btn.addEventListener('blur', () => {
-      console.log('blurrr');
-      const ulP = btn.parentNode;
-      const ul = ulP.querySelector('ul');
-      ul.style.display = 'none';
-      const li = ul.children;
-      const a = li.children;
-      console.log(a);
-    // del.addEventListener("click", removeList())
+    btn.addEventListener("click", dropdownEdit);
+    /*       btn.addEventListener('blur', () => {
+     console.log('blurrr');
+     const ulP = btn.parentNode;
+     const ul = ulP.querySelector('ul');
+     ul.style.display = 'none';
+     const li = ul.children;
+     const a = li.children;
+     console.log(a);
+     // del.addEventListener("click", removeList())
 
 
-    })
+     })*/
+  }
+
+  const delAs = targetP.getElementsByClassName('delA');
+
+  for (let delA of delAs) {
+    delA.addEventListener("click", removeList);
+
   }
 }
+
 const listTemplate = `
     <header class="panel panel-default input-group">
       <p class="p-header panel-heading header-list">list name</p>
       <input type="text" class="panel-heading hidden">
       <div class="input-group-btn">
-        <button type="button" onclick="dropdownEdit()" class="btn btn-default editbtn dropdown-toggle"
+        <button type="button"  class="btn btn-default editbtn dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">edit
+                aria-expanded="false"><span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li class="deletebtn"><a href="#">Delete list</a></li>
+          <li class="deletebtn"><a class="delA" href="#">Delete list</a></li>
 
         </ul>
       </div>
@@ -173,7 +175,6 @@ const listTemplate = `
     <div>
       <ul class="list">
     
-
       </ul>
     </div>
     <footer>
@@ -182,6 +183,7 @@ const listTemplate = `
   `;
 const ENTER = 13; // Enter Keycode
 const evtblur = 'blur';
+const evtClick = 'click';
 
 
 
