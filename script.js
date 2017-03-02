@@ -14,7 +14,6 @@ function addList() {
 
   refreshEvents(emptyList);
 }
-
 function addCard() {
 
   const div = event.target.parentNode.previousSibling.previousSibling;
@@ -24,20 +23,18 @@ function addCard() {
   ul.appendChild(newCard);
 
 }
-
-
 function editName() {
 
   const currentElm = event.target;
   const currentP = currentElm.parentNode;
   // Hide p Element
-  currentElm.className = 'hidden';
+  currentElm.className = 'hiddenMy';
   // Locate Input
   const input = currentP.querySelector('input');
 // Unhide Input Element
-  input.className = 'panel-heading';
+  input.className = 'panel-heading input-heading';
   if (currentElm.textContent === '') {
-    currentElm.textContent = 'UntitleNamed list'
+    currentElm.textContent = 'Untitled list'
   }
   input.value = currentElm.textContent;
   // Focus the Input Element
@@ -52,7 +49,7 @@ function editName() {
     if (event.keyCode === ENTER) {
       currentElm.textContent = input.value;
       currentElm.className = 'p-header panel-heading header-list';
-      input.className = 'hidden';
+      input.className = 'hiddenMy';
       if (currentElm.textContent === '') {
         currentElm.textContent = 'Untitled list'
       }
@@ -64,15 +61,13 @@ function editName() {
     if (event.type === evtblur) {
       currentElm.textContent = input.value;
       currentElm.className = 'p-header panel-heading header-list';
-      input.className = 'hidden';
+      input.className = 'hiddenMy';
       if (currentElm.textContent === '') {
         currentElm.textContent = 'Untitled list'
       }
     }
   }
 }
-
-
 function dropdownEdit() {
 
   const currentBtn = event.target;
@@ -96,7 +91,6 @@ function dropdownEdit() {
 
   }
 }
-
 function removeList(target) {
 
   const currentBtn = event.target;
@@ -154,12 +148,62 @@ function refreshEvents(target) {
     delA.addEventListener("click", removeList);
 
   }
+
+
+  const liCards = document.querySelectorAll('.liCard');
+
+  console.log('1', liCards);
+
+
+  for (const liCard of liCards) {
+    console.log('3', liCard);
+    liCard.addEventListener("mouseover", editCardDisplay);
+    liCard.addEventListener("mouseout", editCardDisplay);
+
+
+
+  }
+  const editCards = document.querySelectorAll('.editCard');
+
+  for (const editCard of editCards) {
+    editCard.addEventListener("mouseover", editCardDisplay);
+    editCard.addEventListener("mouseout", editCardDisplay);
+  }
+
+
+
+  console.log('2', editCards);
+
 }
+function editCardDisplay(ev) {
+  const liCard = ev.target;
+  const editCard = liCard.querySelector('.editCard');
+
+
+  if (ev.type === 'mouseover') {
+
+    editCard.style.display = 'inline-block';
+
+
+  }
+  if (ev.type === 'mouseout') {
+
+
+    editCard.style.display = 'none';
+  }
+
+
+
+
+
+
+}
+
 
 const listTemplate = `
     <header class="panel panel-default input-group">
       <p class="p-header panel-heading header-list">list name</p>
-      <input type="text" class="panel-heading hidden">
+      <input maxlength="15" type="text" class="panel-heading hiddenMy input-heading">
       <div class="input-group-btn">
         <button type="button"  class="btn btn-default editbtn dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true"
@@ -173,9 +217,7 @@ const listTemplate = `
 
     </header>
     <div>
-      <ul class="list">
-    
-      </ul>
+      <ul class="list"></ul>
     </div>
     <footer>
       <button onclick="addCard()" class="btn btn-default addlist card">add card</button>
@@ -184,6 +226,43 @@ const listTemplate = `
 const ENTER = 13; // Enter Keycode
 const evtblur = 'blur';
 const evtClick = 'click';
+
+
+const datalist = {
+  "board": [
+    {
+      "title": "Backlog",
+      "tasks": [
+        {
+          "text": "Wash the dishes"
+        },
+        {
+          "text": "Do the laundry"
+        }
+      ]
+    },
+    {
+      "title": "Todo",
+      "tasks": [
+        {
+          "text": "Practice!"
+        }
+      ]
+    },
+    {
+      "title": "In Progress",
+      "tasks": [
+        {
+          "text": "Code Review"
+        }
+      ]
+    },
+    {
+      "title": "Done",
+      "tasks": []
+    }
+  ]
+}
 
 
 
