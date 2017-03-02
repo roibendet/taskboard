@@ -7,10 +7,8 @@ body {
   padding: 0;
   border: 0;
 
-
-
-
 }
+
 html * {
   margin: 0;
   padding: 0;
@@ -19,20 +17,19 @@ html * {
   box-sizing: border-box;
 }
 
-
 body {
   padding-top: 80px;
   /*background-color: #8c8c8c;*/
 }
+
 .navbar-default {
   position: fixed;
-  top:0;
-  right:0;
-  left:0;
-  margin:0;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: 0;
 
 }
-
 
 .logo {
   background-image: url('assets/taskboard logo.svg');
@@ -40,28 +37,30 @@ body {
   height: 50px;
   width: 50px;
 
-
 }
+
 div > a {
 
   float: left;
   display: inline;
 }
+
 .navbar-collapse {
-padding: 0;
+  padding: 0;
   /*position: fixed;*/
 }
-
 
 .containerr {
 
   display: inline-flex;
-  align-items:flex-start;
+  align-items: flex-start;
   /*justify-content: space-around;*/
   margin-top: 30px;
   /*min-height: 30vh;*/
   max-height: 100%;
   /*background-color: coral;*/
+  /*padding-left: 2%;*/
+
 }
 
 .list-column {
@@ -70,30 +69,30 @@ padding: 0;
   width: calc((100vw) / 4);
   max-height: calc(100vh - 150px);
   position: relative;
-  margin: 0 auto;
+  /*margin: 0 auto;*/
   /*background-color: #8c8c8c;*/
-  border-left:2px solid #f5f5f5;
-  border-right:2px solid #f5f5f5;
-
+  border-left: 2px solid #f5f5f5;
+  border-right: 2px solid #f5f5f5;
+  margin-left: 2%;
 
 }
 
 .list-column > div {
 
   max-height: calc(93vh - 150px);
-min-height: 40px;
+  min-height: 40px;
   width: 100%;
-overflow: auto;
+  overflow: auto;
   padding-bottom: 20px;
   position: relative;
 
 }
 
 .list-column header {
-/*outline: 2px blue solid;*/
+  /*outline: 2px blue solid;*/
   position: absolute;
-  bottom:100%;
-  left:0;
+  bottom: 100%;
+  left: 0;
   width: 100%;
   text-align: center;
   background-color: #F5F5F5;
@@ -103,30 +102,27 @@ overflow: auto;
   text-transform: capitalize;
 
 }
+
 .panel {
   margin: 0;
 
 }
 
-
-
 .hidden {
   display: none;
 }
 
-
-
-
 .list-column footer {
   /*outline: 2px pink solid;*/
   /*position: absolute;*/
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   text-align: center;
   /*background-color: #f69719;*/
   margin: 0 auto;
   position: relative;
+
 
 }
 
@@ -137,16 +133,15 @@ overflow: auto;
   padding: 10px 80px;
   text-align: center;
 }
+
 .card {
   width: calc(100vw / 4);
   margin: 0 auto;
   text-align: center;
 }
 
-
-
 .list > li {
-/*background-color: #8c8c8c;*/
+  /*background-color: #8c8c8c;*/
   outline: 1px blue solid;
   height: 100px;
   text-align: center;
@@ -154,41 +149,39 @@ overflow: auto;
   margin: 0 auto;
   margin-top: 20px;
 
-
 }
+
 .dropdown-menu {
   left: inherit;
   right: 0;
 }
+
 /*.list-column li:last-child {
   margin-bottom: 60px;
 }*/
 
 .licard {
   position: relative;
-  
-
-
-
 
 }
+
 .editCard {
   position: absolute;
   right: 11%;
-  top:6%;
+  top: 6%;
 }
-
 
 @media (min-width: 0) {
 
-  .navbar-nav > li {         /* Effects the problem regarding the float under 768px, fixes that. */
+  .navbar-nav > li { /* Effects the problem regarding the float under 768px, fixes that. */
     float: left;
   }
 
-  .navbar-nav > li > a {     /* Effects the box around the board selected box so it will be the same as above 768px. */
+  .navbar-nav > li > a { /* Effects the box around the board selected box so it will be the same as above 768px. */
     padding: 15px;
   }
-  .nav.navbar-nav {          /* Effects the board and members under 768px, gets them inline. */
+
+  .nav.navbar-nav { /* Effects the board and members under 768px, gets them inline. */
     margin-bottom: 0;
     margin-top: 0;
   }
