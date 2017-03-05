@@ -147,11 +147,13 @@ div > a {
 .list > li {
   /*background-color: #8c8c8c;*/
   outline: 1px blue solid;
-  height: 100px;
+  height: 110%;
+  min-height: 100px;
   text-align: center;
   width: 80%;
   margin: 0 auto;
   margin-top: 20px;
+  /*overflow: hidden;*/
 
 }
 
@@ -168,7 +170,7 @@ div > a {
   position: relative;
 
 }
-.liCard:hover a {
+.liCard:hover .editCard {
   display: inline-block;
 }
 
@@ -192,9 +194,20 @@ div > a {
 .editCard {
   display: none;
 }
+.bottom {
+  bottom: 0;
+}
+/*textarea {
+  display: inline-block;
+}*/
 
 
-
+textarea {
+  wrap;
+  outline: 1px blue solid;
+  float: right;
+  display: block;
+}
 
 
 

@@ -18,74 +18,141 @@ const listTemplate = `
       <ul class="list"></ul>
     </div>
     <footer>
-      <button onclick="addCard()" class="btn btn-default addlist card">add card</button>
+      <button class="btn btn-default addlist card">add card</button>
     </footer>
   `;
 
 
+const cardTemplate = `
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                  <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          `
+
+
 const container = document.getElementById('container');
 const addListBtn = document.getElementById('btnClm');
-addListBtn.addEventListener('click', addList);
+addListBtn.addEventListener('click', () => addList());
 
-refreshEvents();
-
-function addListHandler() {
-
-}
+addListEvents();
 
 
 function addList(data) {
+  // console.log('first', data);
 
 
-  if (data === event) {
+  const emptyList = document.createElement('div');
+  emptyList.className = 'list-column';
+  emptyList.innerHTML = listTemplate;
+  container.insertBefore(emptyList, addListBtn);
 
-    const emptyList = document.createElement('div');
-    emptyList.className = 'list-column';
-    emptyList.innerHTML = listTemplate;
-    container.insertBefore(emptyList, addListBtn);
-
-    refreshEvents(emptyList);
-  }
-  if (data !== event) {
-    const emptyList = document.createElement('div');
-    emptyList.className = 'list-column';
-    emptyList.innerHTML = listTemplate;
-    container.insertBefore(emptyList, addListBtn);
+  if (data) {
     const titleHead = emptyList.querySelector('.p-header');
-    titleHead.innerHTML = data;
-    refreshEvents(emptyList);
+    titleHead.innerHTML = data.title;
 
+    // For each task, create card
+    const tasks = data.tasks;
+    for (const task of tasks) {
+      addCard(emptyList, task);
+      //   console.log(task);
+    }
   }
 
+
+  addListEvents(emptyList);
+}
+
+function addCardClickHandler(ev) {
+
+
+  const currentBtn = ev.target;
+  console.log(currentBtn);
+  const currentList = currentBtn.closest('.list-column');
+  const targetUL = currentList.querySelector('.list');
+
+
+  addCard(targetUL);
 
 }
 
 
-function addCard(data) {
-  if (data === undefined) {
-    const ev = event.target;
-    const div = ev.closest('div');
-    const ul = div.querySelector('.list');
-    const newCard = document.createElement('li');
-    newCard.setAttribute('class', 'liCard');
-    const a = document.createElement('a');
-    a.setAttribute('class', 'editCard');
+function addCard(targetUl, data) {
+//  console.log('first', targetUl);
 
-      a.innerHTML = 'Edit List';
+  const newCard = document.createElement('li');
+  newCard.setAttribute('class', 'liCard');
+  const editCardBtn = document.createElement('button');
+  editCardBtn.setAttribute('class', 'editCard');
+  editCardBtn.setAttribute('data-toggle', 'modal');
+  editCardBtn.setAttribute('data-target', 'myModal');
+  editCardBtn.innerHTML = 'Edit List';
+  newCard.innerHTML = "i'm new";
+  targetUl.appendChild(newCard);
+  newCard.appendChild(editCardBtn);
+//  addCardEvents(newCard);
 
-    newCard.innerHTML = "i'm new";
-    ul.appendChild(newCard);
-    newCard.appendChild(a);
-    refreshEvents(newCard);
+  const modal = document.createElement('div');
+  modal.innerHTML = cardTemplate;
+  modal.setAttribute('class', "modal fade");
+  modal.setAttribute('tabindex', '-1');
+  modal.setAttribute('role', 'dialog');
+  newCard.appendChild(modal);
 
-  }
   if (data) {
 
+    newCard.textContent = data.text;
+    newCard.appendChild(editCardBtn);
+    newCard.appendChild(modal);
+    targetUl.querySelector('.list').appendChild(newCard);
+    // console.log(data.members);
+
+    if (data.members) {
+
+      const title = data.members;
+      const members = data.members;
+      for (const member of members) {
+        const spanElm = document.createElement('span');
+        spanElm.setAttribute('class', 'label label-primary pull-right');
+
+        spanElm.setAttribute('title', data.members);
+        let initial = '';
+
+        const currentName = member.split(' ');
+        //console.log('first', member.charAt(0));
+        //console.log('second', currentNames);
+        for (const namePart of currentName) {
+
+          initial += namePart.charAt(0);
+        }
+
+        console.log(initial);
+
+        spanElm.textContent += initial;
+        newCard.appendChild(spanElm);
+
+      }
+
+
+    }
 
   }
-
+  addCardEvents(newCard);
 
 }
+
 function editName() {
 
   const currentElm = event.target;
@@ -150,7 +217,6 @@ function dropdownEdit() {
   if (currentUl.style.display = 'block' && event.type === evtblur) {
 
     currentUl.style.display = 'none';
-    // refreshEvents(currentBtn);
 
   }
 }
@@ -177,11 +243,30 @@ function removeList(target) {
   }
 }
 
+function addCardEvents(target) {
+
+
+  const editCards = document.querySelectorAll('.editCard');
+  for (const editCard of editCards) {
+    editCard.addEventListener("click", editCardDisplay);
+  }
+
+}
 
 // Helpers
-function refreshEvents(target) {
+function addListEvents(target) {
   const targetP = target || document;
   const Lists = targetP.getElementsByClassName('header-list');
+
+
+  const addCardBtns = targetP.querySelectorAll('.card');
+  // console.log(addCardBtns);
+
+  for (let addCardBtn of addCardBtns) {
+
+    addCardBtn.addEventListener("click", addCardClickHandler);
+  }
+
 
   for (let list of Lists) {
     list.addEventListener("click", editName);
@@ -213,43 +298,43 @@ function refreshEvents(target) {
   }
 
 
-  const liCards = document.querySelectorAll('.liCard');
-
-//  console.log('1', liCards);
-
-//  console.log(target);
-/*  for (const liCard of liCards) {
-    // console.log('3', liCard);
-    liCard.addEventListener("mouseover", editCardDisplay);
-    liCard.addEventListener("mouseout", editCardDisplay);
-
-
-  }
-
-*/
-  const editCards = document.querySelectorAll('.editCard');
-  for (const editCard of editCards) {
-    editCard.addEventListener("click", editCardDisplay);
-
-  }
-
-
-  // console.log('2', editCards);
-
 }
 
 function editCardDisplay(ev) {
- // const liCard = ev.target;
 
-
- // console.log(liCard.children);
- // const editCard = liCard.querySelector('.editCard');
 
   if (ev.type === 'click') {
-    console.log('fuck');
+    const Elm = ev.target;
+    console.log('1', Elm);
+    const li = Elm.closest('li');
+    console.log('2', li);
+    const modalElm = li.querySelector(".modal");
+    console.log(modalElm);
+
+    modalElm.setAttribute('class', "modal fade in");
+    modalElm.style.display = 'block';
+
+
+    const closeBtn = document.querySelector('.close');
+    closeBtn.addEventListener('click', close);
 
 
   }
+}
+
+
+function close() {
+  const Elm = event.target;
+//  console.log(Elm);
+//  console.log(event.type);
+  const li = Elm.closest('li');
+  // console.log(li);
+  const modalElm = li.querySelector(".modal");
+  // console.log(modalElm);
+
+  modalElm.setAttribute('class', "modal fade");
+  modalElm.style.display = 'none';
+
 }
 
 
@@ -262,16 +347,32 @@ function reqListener() {
 
   const localDataList = dataList.responseText;
   const results = JSON.parse(localDataList);
-  //const temps = results.tasks;
+  const resultsTitle = results.board;
+
+  const resultsTasks = resultsTitle.tasks;
 
 
 //  console.log(results.board);
-  for (const result of results.board) {
-    addList(result.title);
+  for (const result of resultsTitle) {
+    //const listTitle = result.title;
+    addList(result);
+
+
     const temp = result.tasks;
-  //  console.log(temp);
+    // addCard(temp);
+    // console.log(temp.length);
+//addCard(temp);
+    // addCardClickHandler(temp);
+
 
   }
+
+
+  /*  for (const temp of resultsTasks) {
+   console.log(temp.title);
+   }*/
+
+
   /*  for (const result of results.board) {
    const temps = result.tasks;
    console.log(temps);
