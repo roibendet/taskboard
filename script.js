@@ -1,26 +1,89 @@
-//
+const listTemplate = `
+    <header class="panel panel-default input-group">
+      <p class="p-header panel-heading header-list">list name</p>
+      <input maxlength="15" type="text" class="panel-heading hiddenMy input-heading">
+      <div class="input-group-btn">
+        <button type="button"  class="btn btn-default editbtn dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false"><span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li class="deletebtn"><a class="delA" href="#">Delete list</a></li>
+
+        </ul>
+      </div>
+
+    </header>
+    <div>
+      <ul class="list"></ul>
+    </div>
+    <footer>
+      <button onclick="addCard()" class="btn btn-default addlist card">add card</button>
+    </footer>
+  `;
+
 
 const container = document.getElementById('container');
 const addListBtn = document.getElementById('btnClm');
+addListBtn.addEventListener('click', addList);
 
 refreshEvents();
 
+function addListHandler() {
 
-function addList() {
-  const emptyList = document.createElement('div');
-  emptyList.className = 'list-column';
-  emptyList.innerHTML = listTemplate;
-  container.insertBefore(emptyList, addListBtn);
-
-  refreshEvents(emptyList);
 }
-function addCard() {
 
-  const div = event.target.parentNode.previousSibling.previousSibling;
-  const ul = div.querySelector('.list');
-  const newCard = document.createElement('li');
-  newCard.innerHTML = "i'm new";
-  ul.appendChild(newCard);
+
+function addList(data) {
+
+
+  if (data === event) {
+
+    const emptyList = document.createElement('div');
+    emptyList.className = 'list-column';
+    emptyList.innerHTML = listTemplate;
+    container.insertBefore(emptyList, addListBtn);
+
+    refreshEvents(emptyList);
+  }
+  if (data !== event) {
+    const emptyList = document.createElement('div');
+    emptyList.className = 'list-column';
+    emptyList.innerHTML = listTemplate;
+    container.insertBefore(emptyList, addListBtn);
+    const titleHead = emptyList.querySelector('.p-header');
+    titleHead.innerHTML = data;
+    refreshEvents(emptyList);
+
+  }
+
+
+}
+
+
+function addCard(data) {
+  if (data === undefined) {
+    const ev = event.target;
+    const div = ev.closest('div');
+    const ul = div.querySelector('.list');
+    const newCard = document.createElement('li');
+    newCard.setAttribute('class', 'liCard');
+    const a = document.createElement('a');
+    a.setAttribute('class', 'editCard');
+
+      a.innerHTML = 'Edit List';
+
+    newCard.innerHTML = "i'm new";
+    ul.appendChild(newCard);
+    newCard.appendChild(a);
+    refreshEvents(newCard);
+
+  }
+  if (data) {
+
+
+  }
+
 
 }
 function editName() {
@@ -86,7 +149,7 @@ function dropdownEdit() {
 
   if (currentUl.style.display = 'block' && event.type === evtblur) {
 
-    currentUl.style.display = 'none'
+    currentUl.style.display = 'none';
     // refreshEvents(currentBtn);
 
   }
@@ -96,7 +159,7 @@ function removeList(target) {
   const currentBtn = event.target;
 //  const currentP = currentBtn.parentNode;
   const currentUl = currentBtn.closest('ul');
-  //console.log(temp);
+  //console.log(localDataList);
   if (event.type === evtClick) {
 
     // Catch the header
@@ -152,117 +215,78 @@ function refreshEvents(target) {
 
   const liCards = document.querySelectorAll('.liCard');
 
-  console.log('1', liCards);
+//  console.log('1', liCards);
 
-
-  for (const liCard of liCards) {
-    console.log('3', liCard);
+//  console.log(target);
+/*  for (const liCard of liCards) {
+    // console.log('3', liCard);
     liCard.addEventListener("mouseover", editCardDisplay);
     liCard.addEventListener("mouseout", editCardDisplay);
 
 
-
   }
+
+*/
   const editCards = document.querySelectorAll('.editCard');
-
   for (const editCard of editCards) {
-    editCard.addEventListener("mouseover", editCardDisplay);
-    editCard.addEventListener("mouseout", editCardDisplay);
+    editCard.addEventListener("click", editCardDisplay);
+
   }
 
 
-
-  console.log('2', editCards);
+  // console.log('2', editCards);
 
 }
+
 function editCardDisplay(ev) {
-  const liCard = ev.target;
-  const editCard = liCard.querySelector('.editCard');
+ // const liCard = ev.target;
 
 
-  if (ev.type === 'mouseover') {
+ // console.log(liCard.children);
+ // const editCard = liCard.querySelector('.editCard');
 
-    editCard.style.display = 'inline-block';
+  if (ev.type === 'click') {
+    console.log('fuck');
 
 
   }
-  if (ev.type === 'mouseout') {
-
-
-    editCard.style.display = 'none';
-  }
-
-
-
-
-
-
 }
 
 
-const listTemplate = `
-    <header class="panel panel-default input-group">
-      <p class="p-header panel-heading header-list">list name</p>
-      <input maxlength="15" type="text" class="panel-heading hiddenMy input-heading">
-      <div class="input-group-btn">
-        <button type="button"  class="btn btn-default editbtn dropdown-toggle"
-                data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false"><span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li class="deletebtn"><a class="delA" href="#">Delete list</a></li>
-
-        </ul>
-      </div>
-
-    </header>
-    <div>
-      <ul class="list"></ul>
-    </div>
-    <footer>
-      <button onclick="addCard()" class="btn btn-default addlist card">add card</button>
-    </footer>
-  `;
 const ENTER = 13; // Enter Keycode
 const evtblur = 'blur';
 const evtClick = 'click';
 
 
-const datalist = {
-  "board": [
-    {
-      "title": "Backlog",
-      "tasks": [
-        {
-          "text": "Wash the dishes"
-        },
-        {
-          "text": "Do the laundry"
-        }
-      ]
-    },
-    {
-      "title": "Todo",
-      "tasks": [
-        {
-          "text": "Practice!"
-        }
-      ]
-    },
-    {
-      "title": "In Progress",
-      "tasks": [
-        {
-          "text": "Code Review"
-        }
-      ]
-    },
-    {
-      "title": "Done",
-      "tasks": []
-    }
-  ]
+function reqListener() {
+
+  const localDataList = dataList.responseText;
+  const results = JSON.parse(localDataList);
+  //const temps = results.tasks;
+
+
+//  console.log(results.board);
+  for (const result of results.board) {
+    addList(result.title);
+    const temp = result.tasks;
+  //  console.log(temp);
+
+  }
+  /*  for (const result of results.board) {
+   const temps = result.tasks;
+   console.log(temps);
+
+   }*/
+
+
 }
+
+const dataList = new XMLHttpRequest();
+
+
+dataList.addEventListener("load", reqListener);
+dataList.open("GET", "assets/board.json");
+dataList.send();
 
 
 
