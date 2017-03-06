@@ -202,11 +202,45 @@ div > a {
 }*/
 
 
-textarea {
-  wrap;
-  outline: 1px blue solid;
-  float: right;
+.input {
+  /*outline: 1px blue solid;*/
+  /*float: right;*/
+  /*display: block;*/
+  /*width: 70%;*/
+  /*float: right;*/
+  width: 86%;
+  margin-left: 13%;
+}
+.modal {
+  background-color: rgba(0,0,0,0.5);
+}
+.moveto {
+
+}
+.movetoselect {
+  width: 86%;
+
+  margin-left: 13%;
+}
+.modal-footer {
+  clear: both;
+}
+.form-check-input {
+  /*outline: 2px blue solid;*/
+
+}
+.test {
+  /*outline: 2px pink solid;*/
+  display: inline-block;
+  height: 100%;
+  max-height: 95px;
+  width: 50%;
+  margin-left: -35%;
+  overflow: auto;
+}
+.form-check-label {
   display: block;
+  text-align: left;
 }
 
 

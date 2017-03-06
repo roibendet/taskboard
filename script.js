@@ -27,20 +27,49 @@ const cardTemplate = `
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title">Modal title</h4>
+                  <button type="button" class="close closemy" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">×</span></button>
+                  <h4 class="modal-title pull-left">Edit card</h4>
                 </div>
                 <div class="modal-body">
-                  <p>One fine body&hellip;</p>
+                  <label class="pull-left">Card Text
+                  </label>
+                  <textarea name="CardText" class="input form-control"></textarea>
+
+                </div>
+                <div class="modal-body">
+                  <label class="moveto pull-left">Move To:</label>
+                  <select class="form-control movetoselect">
+                    <option>member</option>
+                  </select>
+                </div>
+                <div class="modal-body">
+                  <label class="pull-left">Members:
+                  </label>
+
+                  <div class="form-check">
+                    <div class="test form-control">
+                      <label class="form-check-label">Member1
+                        <input class="form-check-input pull-left" type="checkbox" value="member"></label>
+                      <label class="form-check-label">Member2
+                        <input class="form-check-input pull-left" type="checkbox" value="member"> </label>
+                      <label class="form-check-label">Member3 <input class="form-check-input pull-left" type="checkbox"
+                                                                              value="member">
+                    </label>
+                      <label class="form-check-label">Member3 <input class="form-check-input pull-left" type="checkbox"
+                                                                     value="member">
+                      </label>
+                    </div>
+                  </div>
+
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-default closemy" data-dismiss="modal">Close</button>
                   <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
-              </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-          `
+              </div>
+            </div>
+          `;
 
 
 const container = document.getElementById('container');
@@ -138,7 +167,7 @@ function addCard(targetUl, data) {
           initial += namePart.charAt(0);
         }
 
-        console.log(initial);
+      //  console.log(initial);
 
         spanElm.textContent += initial;
         newCard.appendChild(spanElm);
@@ -150,6 +179,8 @@ function addCard(targetUl, data) {
 
   }
   addCardEvents(newCard);
+  addListEvents(newCard);
+
 
 }
 
@@ -251,6 +282,7 @@ function addCardEvents(target) {
     editCard.addEventListener("click", editCardDisplay);
   }
 
+
 }
 
 // Helpers
@@ -267,6 +299,12 @@ function addListEvents(target) {
     addCardBtn.addEventListener("click", addCardClickHandler);
   }
 
+  const closeBtns = targetP.querySelectorAll('.closemy');
+  // console.log(closeBtn);
+  // closeBtn.addEventListener('click', close);
+  for (let closeBtn of closeBtns) {
+    closeBtn.addEventListener('click', close);
+  }
 
   for (let list of Lists) {
     list.addEventListener("click", editName);
@@ -305,18 +343,18 @@ function editCardDisplay(ev) {
 
   if (ev.type === 'click') {
     const Elm = ev.target;
-    console.log('1', Elm);
+//    console.log('1', Elm);
     const li = Elm.closest('li');
-    console.log('2', li);
+//    console.log('2', li);
     const modalElm = li.querySelector(".modal");
-    console.log(modalElm);
+//    console.log(modalElm);
 
     modalElm.setAttribute('class', "modal fade in");
     modalElm.style.display = 'block';
 
 
-    const closeBtn = document.querySelector('.close');
-    closeBtn.addEventListener('click', close);
+    //  const closeBtn = document.querySelector('.close');
+    //  closeBtn.addEventListener('click', close);
 
 
   }
@@ -325,8 +363,7 @@ function editCardDisplay(ev) {
 
 function close() {
   const Elm = event.target;
-//  console.log(Elm);
-//  console.log(event.type);
+
   const li = Elm.closest('li');
   // console.log(li);
   const modalElm = li.querySelector(".modal");
