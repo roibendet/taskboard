@@ -242,6 +242,12 @@ div > a {
   display: block;
   text-align: left;
 }
+.deletebtn {
+  text-align: left;
+}
+.modal-bodymy {
+  text-align: left;
+}
 
 
 

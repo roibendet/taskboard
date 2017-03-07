@@ -27,7 +27,7 @@ const cardTemplate = `
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close closemy" data-dismiss="modal" aria-label="Close"><span
+                  <button type="button" class="btn btn-default closemy pull-right" data-dismiss="modal" aria-label="Close"><span
                     aria-hidden="true">×</span></button>
                   <h4 class="modal-title pull-left">Edit card</h4>
                 </div>
@@ -62,6 +62,9 @@ const cardTemplate = `
                     </div>
                   </div>
 
+                </div>
+                <div class="modal-body modal-bodymy">
+                  <button type="button" class="btn btn-danger deletebtn">Delete Card</button>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default closemy" data-dismiss="modal">Close</button>
@@ -389,32 +392,16 @@ function reqListener() {
   const resultsTasks = resultsTitle.tasks;
 
 
-//  console.log(results.board);
+
   for (const result of resultsTitle) {
     //const listTitle = result.title;
     addList(result);
 
 
-    const temp = result.tasks;
-    // addCard(temp);
-    // console.log(temp.length);
-//addCard(temp);
-    // addCardClickHandler(temp);
 
 
   }
 
-
-  /*  for (const temp of resultsTasks) {
-   console.log(temp.title);
-   }*/
-
-
-  /*  for (const result of results.board) {
-   const temps = result.tasks;
-   console.log(temps);
-
-   }*/
 
 
 }
@@ -425,6 +412,19 @@ const dataList = new XMLHttpRequest();
 dataList.addEventListener("load", reqListener);
 dataList.open("GET", "assets/board.json");
 dataList.send();
+
+
+function none() {
+  const columns = document.querySelectorAll('.list-column');
+  for (let column of columns) {
+    column.style.display = 'none';
+
+  }
+  const bbtt = document.getElementById('hidee');
+  bbtt.style.display = 'none';
+
+
+}
 
 
 
