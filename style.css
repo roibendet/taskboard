@@ -28,6 +28,7 @@ body {
   right: 0;
   left: 0;
   margin: 0;
+  z-index: 100;
 
 }
 
@@ -248,6 +249,27 @@ div > a {
 .modal-bodymy {
   text-align: left;
 }
+
+.member {
+  width: 50%;
+}
+
+
+#addmemberinput {
+  width: 50%;
+}
+
+.membernameinputbtns {
+  display: none;
+}
+.member:hover .membernameinputbtns {
+  display: block;
+}
+
+
+
+
+
 
 
 

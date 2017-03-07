@@ -1,3 +1,4 @@
+
 const listTemplate = `
     <header class="panel panel-default input-group">
       <p class="p-header panel-heading header-list">list name</p>
@@ -83,8 +84,7 @@ addListEvents();
 
 
 function addList(data) {
-  // console.log('first', data);
-
+  const addListBtn = document.getElementById('btnClm');
 
   const emptyList = document.createElement('div');
   emptyList.className = 'list-column';
@@ -111,7 +111,7 @@ function addCardClickHandler(ev) {
 
 
   const currentBtn = ev.target;
-  console.log(currentBtn);
+  // console.log(currentBtn);
   const currentList = currentBtn.closest('.list-column');
   const targetUL = currentList.querySelector('.list');
 
@@ -170,7 +170,7 @@ function addCard(targetUl, data) {
           initial += namePart.charAt(0);
         }
 
-      //  console.log(initial);
+        //  console.log(initial);
 
         spanElm.textContent += initial;
         newCard.appendChild(spanElm);
@@ -290,6 +290,7 @@ function addCardEvents(target) {
 
 // Helpers
 function addListEvents(target) {
+
   const targetP = target || document;
   const Lists = targetP.getElementsByClassName('header-list');
 
@@ -383,14 +384,17 @@ const evtblur = 'blur';
 const evtClick = 'click';
 
 
-function reqListener() {
+// ----------------------------------JSONS----------------------------------------------
+
+// board JSON
+function reqListener(data) {
+  const dataList = data.currentTarget;
 
   const localDataList = dataList.responseText;
   const results = JSON.parse(localDataList);
   const resultsTitle = results.board;
 
-  const resultsTasks = resultsTitle.tasks;
-
+  // const resultsTasks = resultsTitle.tasks;
 
 
   for (const result of resultsTitle) {
@@ -398,37 +402,146 @@ function reqListener() {
     addList(result);
 
 
+  }
+
+}
+function dataListinit() {
+  const dataList = new XMLHttpRequest();
+
+  dataList.addEventListener("load", reqListener);
+  dataList.open("GET", "assets/board.json");
+  dataList.send();
+
+}
+dataListinit();
+
+// Members JSON
 
 
+function MembersreqListener(data) {
+  const membersList = data.currentTarget;
+  const localDataList = membersList.responseText;
+
+  const results = JSON.parse(localDataList);
+
+  const resultsNames = results.members;
+
+  for (const name of resultsNames) {
+    addMember(name);
   }
 
 
+}
+function memberListinit() {
+
+  const membersList = new XMLHttpRequest();
+  membersList.addEventListener("load", MembersreqListener);
+  membersList.open("GET", "assets/members.json");
+  membersList.send();
+
+}
+memberListinit();
+
+// ---------------------------------End of JSON------------------------------------------
+
+
+const listMember = document.querySelector('.list-group');
+const addMemberItem = document.querySelector('.addmember');
+
+function addMember(data) {
+
+
+  const member = document.createElement('li');
+  member.className = 'list-group-item member';
+  member.textContent = addMemberinput.value;
+  listMember.insertBefore(member, addMemberItem);
+
+  if (data) {
+    member.textContent = data.name;
+  }
 
 }
 
-const dataList = new XMLHttpRequest();
 
 
-dataList.addEventListener("load", reqListener);
-dataList.open("GET", "assets/board.json");
-dataList.send();
 
 
-function none() {
-  const columns = document.querySelectorAll('.list-column');
-  for (let column of columns) {
-    column.style.display = 'none';
+const addMemberinput = document.getElementById('addmemberinput');
+
+const addMemberBtn = document.querySelector('.addmemberbtn');
+addMemberBtn.addEventListener('click', () => addMember());
+addMemberinput.addEventListener('keydown', () => {
+    if (event.keyCode === ENTER) {
+      addMember();
+      addMemberinput.value = '';
+    }
+  }
+);
+
+const temp = document.querySelector('.editmember');
+// console.info(temp);
+temp.addEventListener("click", () => tempp());
+
+function tempp() {
+ // console.info(event.target);
+
+}
+
+
+const page = document.querySelector('.nav-top');
+
+
+function currentPage(data) {
+
+
+  const currentStr = data.slice(1);
+
+  // Find the active Elm
+  const currentActive = page.querySelector('.active');
+
+  // Find the not action Elm
+  const currentNotActive = page.querySelector(`.${currentStr}`);
+
+  currentActive.classList.remove('active');
+  // Add Active effect to current target
+
+  currentNotActive.classList.add('active');
+
+}
+
+window.addEventListener('hashchange', () => {
+  const currentHash = window.location.hash;
+
+
+  if (currentHash === '#member') {
+    memberView();
+    currentPage(currentHash);
 
   }
-  const bbtt = document.getElementById('hidee');
-  bbtt.style.display = 'none';
+  if (currentHash === '#board') {
+    listView();
+    currentPage(currentHash);
+  }
+
+
+});
+
+
+function listView() {
+
+  container.innerHTML = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`;
+
+  const addListBtn = document.getElementById('btnClm');
+  addListBtn.addEventListener('click', () => addList());
+  dataListinit();
+
+}
+function memberView() {
+  // console.info('work member');
+  container.innerHTML = `<h4>hi</h4>`;
 
 
 }
-
-
-
-
 
 
 
