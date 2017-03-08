@@ -30,6 +30,7 @@ body {
   margin: 0;
   z-index: 100;
 
+
 }
 
 .logo {
@@ -37,6 +38,7 @@ body {
   background-size: cover;
   height: 50px;
   width: 50px;
+  margin-left: 1%;
 
 }
 
@@ -49,6 +51,10 @@ div > a {
 .navbar-collapse {
   padding: 0;
   /*position: fixed;*/
+
+}
+.nav {
+  margin-left: 1%;
 }
 
 .containerr {
@@ -264,6 +270,19 @@ div > a {
 }
 .member:hover .membernameinputbtns {
   display: block;
+}
+
+
+.memberview {
+  /*width: 100vw;*/
+  display: block;
+  padding: 2%;
+  outline: 2px blue solid;
+}
+
+.membertitle {
+  outline: 2px red solid;
+  margin-bottom: 2%;
 }
 
 
