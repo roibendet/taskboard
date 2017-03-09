@@ -85,7 +85,7 @@ const member = `<h1 class="membertitle">
       <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
       <div class="pull-right membernameinputbtns">
         <button class="btn btn-info editmember">Edit</button>
-        <button class="btn btn-danger deletemember">Delete</button>
+        <button onclick="tempp()" class="btn btn-danger deletemember">Delete</button>
         <button class="btn btn-default cancelmember hiddenMy">Cancel</button>
         <button class="btn btn-success savemember hiddenMy">Save</button>
       </div>
@@ -124,6 +124,7 @@ function addList(data) {
   emptyList.innerHTML = listTemplate;
   container.insertBefore(emptyList, addListBtn);
 
+
   if (data) {
     const titleHead = emptyList.querySelector('.p-header');
     titleHead.innerHTML = data.title;
@@ -134,6 +135,15 @@ function addList(data) {
       addCard(emptyList, task);
       //   console.log(task);
     }
+  }
+  if (!data) {
+
+    const newList = {
+      tasks: [],
+      title: 'list Name'
+    };
+    appData.lists.push(newList);
+
   }
 
 
@@ -160,6 +170,7 @@ function addCard(targetUl, data) {
   editCardBtn.setAttribute('data-target', 'myModal');
   editCardBtn.innerHTML = 'Edit List';
   newCard.innerHTML = "i'm new";
+
   targetUl.appendChild(newCard);
   newCard.appendChild(editCardBtn);
 
@@ -189,8 +200,7 @@ function addCard(targetUl, data) {
         let initial = '';
 
         const currentName = member.split(' ');
-        //console.log('first', member.charAt(0));
-        //console.log('second', currentNames);
+
         for (const namePart of currentName) {
 
           initial += namePart.charAt(0);
@@ -207,13 +217,33 @@ function addCard(targetUl, data) {
     }
 
   }
+
+  if (!data) {
+
+    const targetList = targetUl.closest('.list-column');
+
+    const targetTitle = targetList.querySelector('p').textContent;
+
+    appData.lists.forEach((item) => {
+      if (item.title === targetTitle) {
+
+        const newCard = {
+          members: [],
+          text: "i'm new"
+        };
+        item.tasks.push(newCard);
+
+      }
+    });
+  }
+
   addCardEvents(newCard);
   addListEvents(newCard);
 
 
 }
 function editName() {
-  // console.log('addList', counter++);
+
   const currentElm = event.target;
   const currentP = currentElm.parentNode;
   // Hide p Element
@@ -236,11 +266,16 @@ function editName() {
   function eventhandeler(event) {
     currentElm.focus();
     if (event.keyCode === ENTER) {
+      const currentElmBefore = currentElm.innerHTML;
       currentElm.textContent = input.value;
+      const currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
       input.className = 'hiddenMy';
+      titleappDataHandler(currentElmBefore, currentElmAfter);
       if (currentElm.textContent === '') {
-        currentElm.textContent = 'Untitled list'
+
+        currentElm.textContent = 'Untitled list';
+        titleappDataHandler(currentElm)
       }
       //   eventhandeler();
 
@@ -257,15 +292,47 @@ function editName() {
     }
   }
 }
+function titleappDataHandler(NameBefore, NameAfter) {
+  console.info('first', NameBefore);
+  console.info('second', NameAfter);
+
+  /*  function thisTitleName(data) {
+   return data;
+   }*/
+
+  // console.info('appData', appData.lists);
+ // console.info('in appData', appData.lists.find(NameBefore));
+  /*
+   var inventory = [
+   {name: 'apples', quantity: 2},
+   {name: 'bananas', quantity: 0},
+   {name: 'cherries', quantity: 5}
+   ];*/
+
+/*  function thisTitleName(NameBefore) {
+    console.info(appData.lists.forEach((list) => {
+      console.info(list);
+    }));*/
+    // console.info(NameBefore.title);
+    // console.info(appData.lists);
+    //  return appData.lists === NameBefore.title;
+  }
+
+  // console.log(inventory.find(findCherries));
+// { name: 'cherries', quantity: 5 }
+
+
+
+
+
 function dropdownEdit() {
 
   const currentBtn = event.target;
 
-  const currentP = currentBtn.parentNode;
 
+  const currentP = currentBtn.closest('.input-group-btn');
   const currentUl = currentP.querySelector('ul');
-
-  const delBtn = currentUl.querySelector('li a');
+  // const delBtn = currentUl.querySelector('li a');
 
 
   if (currentUl.style.display = 'none') {
@@ -280,10 +347,12 @@ function dropdownEdit() {
   }
 }
 function removeList(target) {
-
+  // addListEvents();
+  // console.info(event.target);
   const currentBtn = event.target;
 //  const currentP = currentBtn.parentNode;
-  const currentUl = currentBtn.closest('ul');
+//   const currentUl = currentBtn.closest('ul');
+  const currentUl = event.target.closest('ul');
   //console.log(localDataList);
   if (event.type === evtClick) {
 
@@ -296,11 +365,28 @@ function removeList(target) {
       const currentList = currentBtn.closest('.list-column');
       const main = currentBtn.closest('main');
       main.removeChild(currentList);
+      // remove from appData
+      // console.info('title Name', titleName);
+// console.info('appdatalists',appData.lists);
+      appData.lists.forEach((item) => {
+// console.info(item.title);
+        if (item.title === titleName) {
+          let index = appData.lists.indexOf(item);
+          if (index > -1) {
+            appData.lists.splice(index, 1);
+          }
+
+        }
+      });
+
+
     }
     // Else
     currentUl.style.display = 'none';
   }
 }
+
+
 function addCardEvents(target) {
   // console.log('addList', counter++);
 
@@ -396,8 +482,8 @@ const evtClick = 'click';
 // ----------------------------------JSONS----------------------------------------------
 
 // board JSON
-function reqListener(data) {
-  console.log('reqListener', counter++);
+function appDataBoard(data) {
+  console.log('appDataBoard', counter++);
   const dataList = data.currentTarget;
 
   const localDataList = dataList.responseText;
@@ -405,8 +491,11 @@ function reqListener(data) {
   const resultsTitle = results.board;
   appData.lists = results.board;
   // console.info(appData);
+  allJSONS.push(True);
+  console.info('appDataBoard', 'Done');
+  isAllDataReady();
 
-  pageByURL();
+  // pageByURL();
   /*for (const result of resultsTitle) {
 
    addList(result);
@@ -414,41 +503,45 @@ function reqListener(data) {
    }*/
 
 }
-function dataListinit() {
-  window.addEventListener('hashchange', () => pageByURL());
-  console.log('dataListinit', counter++);
+function getBoardData() {
+  console.log('getBoardData', counter++);
+
+
   const dataList = new XMLHttpRequest();
 
-  dataList.addEventListener("load", reqListener);
+  dataList.addEventListener("load", appDataBoard);
   dataList.open("GET", "assets/board.json");
   dataList.send();
 
-  memberListinit();
 
 }
-
-
 
 
 // Members JSON
 
 //
-function MembersreqListener(data) {
-  console.log('MembersreqListener', counter++);
+function appDataMember(data) {
+  console.log('appDataMember', counter++);
+
   const membersList = data.currentTarget;
   const localDataList = membersList.responseText;
   const results = JSON.parse(localDataList);
   appData.members = results.members;
 
+  allJSONS.push(True);
+
+  console.log('appDataMember', 'Done');
+  isAllDataReady();
 
 }
 
 // Members JSON loader
-function memberListinit() {
-  console.log('memberListinit', counter++);
+function getMemberData() {
+
+  console.log('getMemberData', counter++);
 
   const membersList = new XMLHttpRequest();
-  membersList.addEventListener("load", MembersreqListener);
+  membersList.addEventListener("load", appDataMember);
   membersList.open("GET", "assets/members.json");
   membersList.send();
 
@@ -487,12 +580,9 @@ const temp = document.querySelector('.editmember');
 //temp.addEventListener("click", () => tempp());
 
 function tempp() {
-
-
+  temp.addEventListener("click", () => tempp());
+  console.info('fuck');
 }
-
-
-
 
 
 function currentPage(data) {
@@ -522,7 +612,7 @@ function pageByURL() {
 
 
   if (currentHash === '#member') {
-    //memberListinit();
+
     memberView();
     container.classList.add('memberview');
     currentPage(currentHash);
@@ -534,14 +624,20 @@ function pageByURL() {
     // console.info('board');
     listView();
     container.classList.remove('memberview');
-    // dataListinit();
+    // getBoardData();
     currentPage(currentHash);
 
   }
-  if ((currentHash !== '#board' && currentHash !== '#member') /*|| currentHash === ''*/) {
+  if ((currentHash !== '#board' && currentHash !== '#member') || currentHash === '') {
     window.location.hash = '#board';
 
   }
+  /*  if (!currentHash) {
+   window.location.hash = '#board'
+   }*/
+  /* else {
+   window.location.hash = '#board'
+   }*/
 
 
 }
@@ -553,7 +649,7 @@ function listView() {
   container.innerHTML = addListBtnElm;
   const addListBtn = document.getElementById('btnClm');
 //  addListBtn.addEventListener('click', () => addList());
-  // dataListinit();
+  // getBoardData();
   // const addListBtn = document.getElementById('btnClm');
   addListBtn.addEventListener('click', () => addList());
   for (const result of appData.lists) {
@@ -587,5 +683,25 @@ function memberView() {
 }
 
 
-dataListinit();
+const True = 'true';
+
+const allJSONS = [];
+function multiJSON() {
+  console.info('multiJSON', counter++);
+  window.addEventListener('hashchange', () => pageByURL());
+  getBoardData();
+  getMemberData();
+
+}
+multiJSON();
+
+function isAllDataReady() {
+  console.info('isAllDataReady', counter++);
+  if (allJSONS[0] && allJSONS[1]) {
+    pageByURL();
+  }
+}
+
+
+
 
