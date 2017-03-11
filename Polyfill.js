@@ -23,7 +23,7 @@ var a = [0,1,,,,5,6];
 
 // Shows all indexes, not just those that have been assigned values
 a.find(function(value, index) {
-  console.log('Visited index ' + index + ' with value ' + value);
+  // console.log('Visited index ' + index + ' with value ' + value);
 });
 
 // Shows all indexes, including deleted
@@ -31,11 +31,11 @@ a.find(function(value, index) {
 
   // Delete element 5 on first iteration
   if (index == 0) {
-    console.log('Deleting a[5] with value ' + a[5]);
+    // console.log('Deleting a[5] with value ' + a[5]);
     delete a[5];
   }
   // Element 5 is still visited even though deleted
-  console.log('Visited index ' + index + ' with value ' + value);
+  // console.log('Visited index ' + index + ' with value ' + value);
 });
 /*Polyfill
 This method has been added to the ECMAScript 2015 specification and may not be available in all JavaScript implementations yet. However, you can polyfill Array.prototype.find with the following snippet:*/

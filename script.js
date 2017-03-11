@@ -1,6 +1,6 @@
 const listTemplate = `
     <header class="panel panel-default input-group">
-      <p class="p-header panel-heading header-list">list name</p>
+      <p class="p-header panel-heading header-list"></p>
       <input maxlength="15" type="text" class="panel-heading hiddenMy input-heading">
       <div class="input-group-btn">
         <button type="button"  class="btn btn-default editbtn dropdown-toggle"
@@ -21,8 +21,6 @@ const listTemplate = `
       <button class="btn btn-default addlist card">add card</button>
     </footer>
   `;
-
-
 const cardTemplate = `
             <div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -73,23 +71,15 @@ const cardTemplate = `
               </div>
             </div>
           `;
-
-
 const member = `<h1 class="membertitle">
     Taskboard Members
   </h1>
 
   <ul class="list-group">
-    <li class="list-group-item member">
-      <span>test</span>
-      <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
-      <div class="pull-right membernameinputbtns">
-        <button class="btn btn-info editmember">Edit</button>
-        <button onclick="tempp()" class="btn btn-danger deletemember">Delete</button>
-        <button class="btn btn-default cancelmember hiddenMy">Cancel</button>
-        <button class="btn btn-success savemember hiddenMy">Save</button>
-      </div>
-    </li>
+     
+    
+    
+    
     <li class="list-group-item member addmember input-group">
       <input type="text" id="addmemberinput" class="form-control" placeholder="Add new member">
       <span class="input-group-btn">
@@ -99,31 +89,61 @@ const member = `<h1 class="membertitle">
   </ul>`
 
 
+
+const goodmember = `
+  <span></span>
+  <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
+  <div class="pull-right membernameinputbtns">
+  <button class="btn btn-info editmember">Edit</button>
+  <button  class="btn btn-danger deletemember">Delete</button>
+  <button class="btn btn-default cancelmember hiddenMy">Cancel</button>
+  <button class="btn btn-success savemember hiddenMy">Save</button>
+  </div>
+  `
+
+
+const memberTemp = `
+      <span>test</span>
+      <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
+      <div class="pull-right membernameinputbtns">
+        <button class="btn btn-info editmember">Edit</button>
+        <button  class="btn btn-danger deletemember">Delete</button>
+        <button class="btn btn-default cancelmember hiddenMy">Cancel</button>
+        <button class="btn btn-success savemember hiddenMy">Save</button>
+      </div>
+    `;
+
+
+
 const addListBtnElm = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`
-
-
 const appData = {
   lists: [],
   members: []
 };
-
 let counter = 1;
-
-
 const container = document.getElementById('container');
+const ENTER = 13;
+const evtblur = 'blur';
+const evtClick = 'click';
+const True = 'true';
+const allJSONS = [];
+const untitled = 'Untitled list';
+let addListCounter = 1;
 
 
 addListEvents();
 
 
 function addList(data) {
+  const listName = `list Name ${addListCounter}`;
   // console.log('addList', counter++);
   const addListBtn = document.getElementById('btnClm');
   const emptyList = document.createElement('div');
   emptyList.className = 'list-column';
   emptyList.innerHTML = listTemplate;
+  emptyList.querySelector('.p-header').innerHTML = listName;
+  // console.info(listTemplate);
   container.insertBefore(emptyList, addListBtn);
-
 
   if (data) {
     const titleHead = emptyList.querySelector('.p-header');
@@ -133,21 +153,25 @@ function addList(data) {
     const tasks = data.tasks;
     for (const task of tasks) {
       addCard(emptyList, task);
-      //   console.log(task);
+
     }
   }
   if (!data) {
 
+
     const newList = {
       tasks: [],
-      title: 'list Name'
+      title: `list Name ${addListCounter++}`
     };
+
+
     appData.lists.push(newList);
 
   }
 
 
   addListEvents(emptyList);
+
 }
 function addCardClickHandler(ev) {
   // console.log('addList', counter++);
@@ -253,7 +277,9 @@ function editName() {
 // Unhide Input Element
   input.className = 'panel-heading input-heading';
   if (currentElm.textContent === '') {
-    currentElm.textContent = 'Untitled list'
+    currentElm.textContent = 'Untitled list';
+
+    titleappDataHandler(untitled, untitled);
   }
   input.value = currentElm.textContent;
   // Focus the Input Element
@@ -264,67 +290,64 @@ function editName() {
   input.addEventListener('blur', eventhandeler);
 
   function eventhandeler(event) {
+
+
     currentElm.focus();
+
+
     if (event.keyCode === ENTER) {
-      const currentElmBefore = currentElm.innerHTML;
+      let currentElmBefore = currentElm.innerHTML;
       currentElm.textContent = input.value;
-      const currentElmAfter = currentElm.textContent;
+      let currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
       input.className = 'hiddenMy';
-      titleappDataHandler(currentElmBefore, currentElmAfter);
+      titleappDataHandler(currentElmBefore,currentElmAfter);
       if (currentElm.textContent === '') {
 
         currentElm.textContent = 'Untitled list';
-        titleappDataHandler(currentElm)
+        //  titleappDataHandler(untitled,untitled);
+        //  currentElmAfter = untitled;
       }
-      //   eventhandeler();
+
+
+      /*   if (currentElm.textContent === //other like him)
+       titleappDataHandler(currentElmBefore, currentElmAfter);
+       //   eventhandeler();*/
 
     }
 
 
     if (event.type === evtblur) {
+      const currentElmBefore = currentElm.innerHTML;
+
+
       currentElm.textContent = input.value;
+      let currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
       input.className = 'hiddenMy';
+
       if (currentElm.textContent === '') {
-        currentElm.textContent = 'Untitled list'
+
+        currentElm.textContent = 'Untitled list';
+        currentElmAfter = currentElm.textContent;
       }
+      titleappDataHandler(currentElmBefore, currentElmAfter);
     }
   }
 }
 function titleappDataHandler(NameBefore, NameAfter) {
-  console.info('first', NameBefore);
-  console.info('second', NameAfter);
 
-  /*  function thisTitleName(data) {
-   return data;
-   }*/
-
-  // console.info('appData', appData.lists);
- // console.info('in appData', appData.lists.find(NameBefore));
-  /*
-   var inventory = [
-   {name: 'apples', quantity: 2},
-   {name: 'bananas', quantity: 0},
-   {name: 'cherries', quantity: 5}
-   ];*/
-
-/*  function thisTitleName(NameBefore) {
-    console.info(appData.lists.forEach((list) => {
-      console.info(list);
-    }));*/
-    // console.info(NameBefore.title);
-    // console.info(appData.lists);
-    //  return appData.lists === NameBefore.title;
-  }
-
-  // console.log(inventory.find(findCherries));
-// { name: 'cherries', quantity: 5 }
+  appData.lists.forEach((item) => {
+    // console.info(item.title);
+    if (item.title === NameBefore) {
+      // console.info('found', item);
+      item.title = NameAfter;
+    }
 
 
+  });
 
-
-
+}
 function dropdownEdit() {
 
   const currentBtn = event.target;
@@ -366,15 +389,13 @@ function removeList(target) {
       const main = currentBtn.closest('main');
       main.removeChild(currentList);
       // remove from appData
-      // console.info('title Name', titleName);
-// console.info('appdatalists',appData.lists);
+
       appData.lists.forEach((item) => {
-// console.info(item.title);
         if (item.title === titleName) {
           let index = appData.lists.indexOf(item);
-          if (index > -1) {
-            appData.lists.splice(index, 1);
-          }
+          /*      if (index > -1) {*/
+          appData.lists.splice(index, 1);
+          /*  }*/
 
         }
       });
@@ -474,11 +495,6 @@ function close() {
 }
 
 
-const ENTER = 13; // Enter Keycode
-const evtblur = 'blur';
-const evtClick = 'click';
-
-
 // ----------------------------------JSONS----------------------------------------------
 
 // board JSON
@@ -519,7 +535,7 @@ function getBoardData() {
 
 // Members JSON
 
-//
+
 function appDataMember(data) {
   console.log('appDataMember', counter++);
 
@@ -565,23 +581,36 @@ function addMember(data) {
   const addMemberItem = document.querySelector('.addmember');
   const addMemberinputElm = document.getElementById('addmemberinput');
   const member = document.createElement('li');
+
   member.className = 'list-group-item member';
-  member.textContent = addMemberinputElm.value;
+  // member.textContent = addMemberinputElm.value;
+
+  member.innerHTML = goodmember;
+  const memberName = member.querySelector('span');
+  memberName.textContent = addMemberinputElm.value;
   listMember.insertBefore(member, addMemberItem);
 
   if (data) {
-    member.textContent = data.name;
+    const memberName = member.querySelector('span');
+    memberName.textContent = data.name;
+    // member.textContent = data.name;
   }
 
 }
 
-const temp = document.querySelector('.editmember');
 
-//temp.addEventListener("click", () => tempp());
 
-function tempp() {
-  temp.addEventListener("click", () => tempp());
+
+
+function deleteMember() {
+//  temp.addEventListener("click", () => tempp());
   console.info('fuck');
+  // console.info(temp);
+  const temppp = document.querySelector('.deletemember');
+  console.info(temppp);
+  const currentMember = temppp.closest('li');
+  console.info(currentMember);
+  currentMember.remove();
 }
 
 
@@ -603,7 +632,6 @@ function currentPage(data) {
   currentNotActive.classList.add('active');
 
 }
-
 
 function pageByURL() {
   // window.addEventListener('hashchange', () => pageByURL());
@@ -642,7 +670,6 @@ function pageByURL() {
 
 }
 
-
 function listView() {
   console.log('listView', counter++);
 
@@ -665,8 +692,8 @@ function memberView() {
   container.innerHTML = member;
 
   const addMemberinputElm = document.getElementById('addmemberinput');
-
   const addMemberBtn = document.querySelector('.addmemberbtn');
+
   addMemberBtn.addEventListener('click', () => addMember());
   addMemberinputElm.addEventListener('keydown', () => {
       if (event.keyCode === ENTER) {
@@ -680,12 +707,13 @@ function memberView() {
     addMember(result);
   }
 
+  const deleteBtns = document.querySelectorAll('.deletemember');
+  console.info(deleteBtns);
+
 }
 
 
-const True = 'true';
 
-const allJSONS = [];
 function multiJSON() {
   console.info('multiJSON', counter++);
   window.addEventListener('hashchange', () => pageByURL());
