@@ -88,6 +88,8 @@ const member = `<h1 class="membertitle">
     </li>
   </ul>`
 
+console.info(uuid.v1());
+
 
 const memberBtns = `
   <span></span>
@@ -645,10 +647,32 @@ function editMember(event) {
   toggleBtns(event);
   const target = event.target;
   const targetP = target.closest('.membernameinputbtns');
+  const targetFather = targetP.parentNode;
+
+  const targetInput = targetFather.querySelector('.membernameinput');
+  targetInput.style.display = 'inline-block';
+  targetInput.focus();
+  targetInput.value = targetFather.querySelector('span').textContent;
+  targetFather.querySelector('span').style.display = 'none';
   // let cancelBtnMember = targetP.querySelector('.cancelmember');
-  targetP.style.display = 'inline-block';
+  targetP.style.display = 'block';
+  const saveBtn = targetFather.querySelector('.savemember');
+  saveBtn.addEventListener('click', () => {
+    targetFather.querySelector('span').textContent = targetInput.value;
+    targetInput.style.display = 'none';
+    targetFather.querySelector('span').style.display = 'inline-block';
+    toggleBtns(event);
+  });
+  const cancelBtn =  targetFather.querySelector('.cancelmember');
+  cancelBtn.addEventListener('click', () => {
 
+    //targetFather.querySelector('span').textContent = targetInput.value;
+    targetInput.style.display = 'none';
+    targetFather.classList.toggle('hiddenMy');
+    targetFather.querySelector('span').style.display = 'inline-block';
+    toggleBtns(event);
 
+  });
 }
 
 function currentPage(data) {
