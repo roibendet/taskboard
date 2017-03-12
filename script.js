@@ -247,7 +247,7 @@ function addCard(targetUl, data) {
     const targetTitle = targetList.querySelector('p').textContent;
 
     appData.lists.forEach((item) => {
-      
+
       if (item.title === targetTitle) {
 
         const newCard = {
