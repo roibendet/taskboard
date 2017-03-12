@@ -121,6 +121,9 @@ div > a {
 .hiddenMy {
   display: none;
 }
+.allWayson {
+  display: block;
+}
 
 .list-column footer {
   /*outline: 2px pink solid;*/

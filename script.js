@@ -91,7 +91,7 @@ const member = `<h1 class="membertitle">
 
 const memberBtns = `
   <span></span>
-  <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
+  <input maxlength="15" type="text" class="membernameinput p-header panel-heading hiddenMy">
   <div class="pull-right membernameinputbtns">
   <button class="btn btn-info editmember">Edit</button>
   <button  class="btn btn-danger deletemember">Delete</button>
@@ -595,6 +595,7 @@ function addMember(data) {
   let deleteBtnMember = member.querySelector('.deletemember');
   deleteBtnMember.addEventListener('click', () => deleteMember(event));
   let editBtnMember = member.querySelector('.editmember');
+  // console.info(editBtnMember);
   editBtnMember.addEventListener('click', () => editMember(event));
 
   if (data) {
@@ -626,7 +627,29 @@ function deleteMember(event) {
 
   currentMember.remove();
 }
+function toggleBtns() {
+  let editBtnMember = event.target;
+  let allBtnsofLi = editBtnMember.closest('li').querySelectorAll('.btn');
+  // console.info(allBtnsofLi);
+  allBtnsofLi.forEach((btn) => {
 
+    btn.classList.toggle('hiddenMy');
+
+    // const currentOn = btn.querySelector('.')
+
+  });
+}
+
+
+function editMember(event) {
+  toggleBtns(event);
+  const target = event.target;
+  const targetP = target.closest('.membernameinputbtns');
+  // let cancelBtnMember = targetP.querySelector('.cancelmember');
+  targetP.style.display = 'inline-block';
+
+
+}
 
 function currentPage(data) {
   const topNav = document.querySelector('.nav-top');
