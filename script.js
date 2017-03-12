@@ -89,8 +89,7 @@ const member = `<h1 class="membertitle">
   </ul>`
 
 
-
-const goodmember = `
+const memberBtns = `
   <span></span>
   <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
   <div class="pull-right membernameinputbtns">
@@ -112,7 +111,6 @@ const memberTemp = `
         <button class="btn btn-success savemember hiddenMy">Save</button>
       </div>
     `;
-
 
 
 const addListBtnElm = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`
@@ -249,6 +247,7 @@ function addCard(targetUl, data) {
     const targetTitle = targetList.querySelector('p').textContent;
 
     appData.lists.forEach((item) => {
+      
       if (item.title === targetTitle) {
 
         const newCard = {
@@ -301,7 +300,7 @@ function editName() {
       let currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
       input.className = 'hiddenMy';
-      titleappDataHandler(currentElmBefore,currentElmAfter);
+      titleappDataHandler(currentElmBefore, currentElmAfter);
       if (currentElm.textContent === '') {
 
         currentElm.textContent = 'Untitled list';
@@ -572,44 +571,59 @@ function getMemberData() {
 
 function addMember(data) {
   console.info('add Member', counter++);
-  // console.info(data);
+
   /*  for (const name of appData.members) {
    addMember(name);
    }*/
+  // Creating Member
   const listMember = document.querySelector('.list-group');
-  // console.info(listMember);
   const addMemberItem = document.querySelector('.addmember');
   const addMemberinputElm = document.getElementById('addmemberinput');
   const member = document.createElement('li');
-
   member.className = 'list-group-item member';
   // member.textContent = addMemberinputElm.value;
-
-  member.innerHTML = goodmember;
+  member.innerHTML = memberBtns;
   const memberName = member.querySelector('span');
   memberName.textContent = addMemberinputElm.value;
+// Insert Member to DOM
   listMember.insertBefore(member, addMemberItem);
+  const memberobj = {
+    name: ''
+  };
+
+// Adding Event Listener
+  let deleteBtnMember = member.querySelector('.deletemember');
+  deleteBtnMember.addEventListener('click', () => deleteMember(event));
+  let editBtnMember = member.querySelector('.editmember');
+  editBtnMember.addEventListener('click', () => editMember(event));
 
   if (data) {
     const memberName = member.querySelector('span');
     memberName.textContent = data.name;
-    // member.textContent = data.name;
+
+  }
+  // Add to appData.members
+  if (!data) {
+    memberobj.name = memberName.textContent;
+    appData.members.push(memberobj);
   }
 
 }
 
 
+function deleteMember(event) {
+  let deleteBtnMember = event.target;
+  console.info(deleteBtnMember);
+  let currentMember = deleteBtnMember.closest('li');
+  const memberName = currentMember.querySelector('span').textContent;
+  appData.members.forEach((member) => {
+    console.info(member.name);
+    if (member.name === memberName) {
+      let index = appData.members.indexOf(member);
+      appData.members.splice(index, 1)
+    }
+  });
 
-
-
-function deleteMember() {
-//  temp.addEventListener("click", () => tempp());
-  console.info('fuck');
-  // console.info(temp);
-  const temppp = document.querySelector('.deletemember');
-  console.info(temppp);
-  const currentMember = temppp.closest('li');
-  console.info(currentMember);
   currentMember.remove();
 }
 
@@ -708,10 +722,9 @@ function memberView() {
   }
 
   const deleteBtns = document.querySelectorAll('.deletemember');
-  console.info(deleteBtns);
+  // console.info(deleteBtns);
 
 }
-
 
 
 function multiJSON() {
