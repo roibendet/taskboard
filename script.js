@@ -103,18 +103,6 @@ const memberBtns = `
   `
 
 
-const memberTemp = `
-      <span>test</span>
-      <input maxlength="15" type="text" class="membernameinput p-header panel-heading">
-      <div class="pull-right membernameinputbtns">
-        <button class="btn btn-info editmember">Edit</button>
-        <button  class="btn btn-danger deletemember">Delete</button>
-        <button class="btn btn-default cancelmember hiddenMy">Cancel</button>
-        <button class="btn btn-success savemember hiddenMy">Save</button>
-      </div>
-    `;
-
-
 const addListBtnElm = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`
 const appData = {
   lists: [],
@@ -157,15 +145,17 @@ function addList(data) {
     }
   }
   if (!data) {
+    let newID = uuid.v1();
 
-
-    const newList = {
+    let newList = {
+      id: `${newID}`,
       tasks: [],
       title: `list Name ${addListCounter++}`
     };
 
-
+    emptyList.setAttribute("uniqueID", newList.id);
     appData.lists.push(newList);
+    console.info('after', newList.id);
 
   }
 
@@ -663,7 +653,7 @@ function editMember(event) {
     targetFather.querySelector('span').style.display = 'inline-block';
     toggleBtns(event);
   });
-  const cancelBtn =  targetFather.querySelector('.cancelmember');
+  const cancelBtn = targetFather.querySelector('.cancelmember');
   cancelBtn.addEventListener('click', () => {
 
     //targetFather.querySelector('span').textContent = targetInput.value;
