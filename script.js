@@ -88,8 +88,6 @@ const member = `<h1 class="membertitle">
     </li>
   </ul>`
 
-console.info(uuid.v1());
-
 
 const memberBtns = `
   <span></span>
@@ -119,18 +117,178 @@ const untitled = 'Untitled list';
 let addListCounter = 1;
 
 
+// ----------------------------------JSONS----------------------------------------------
+
+// board JSON
+function appDataBoard(data) {
+  console.log('appDataBoard', counter++);
+  const dataList = data.currentTarget;
+
+  const localDataList = dataList.responseText;
+  const results = JSON.parse(localDataList);
+  const resultsTitle = results.board;
+  appData.lists = results.board;
+  // console.info(appData);
+  allJSONS.push(True);
+  console.info('appDataBoard', 'Done');
+  isAllDataReady();
+
+  // pageByURL();
+  /*for (const result of resultsTitle) {
+
+   addList(result);
+
+   }*/
+
+}
+function getBoardData() {
+  console.log('getBoardData', counter++);
+
+
+  const dataList = new XMLHttpRequest();
+
+  dataList.addEventListener("load", appDataBoard);
+  dataList.open("GET", "assets/board-advanced.json");
+  dataList.send();
+
+
+}
+// Members JSON
+function appDataMember(data) {
+  console.log('appDataMember', counter++);
+
+  const membersList = data.currentTarget;
+  const localDataList = membersList.responseText;
+  const results = JSON.parse(localDataList);
+  appData.members = results.members;
+
+  allJSONS.push(True);
+
+  console.log('appDataMember', 'Done');
+  isAllDataReady();
+
+}
+// Members JSON loader
+function getMemberData() {
+
+  console.log('getMemberData', counter++);
+
+  const membersList = new XMLHttpRequest();
+  membersList.addEventListener("load", appDataMember);
+  membersList.open("GET", "assets/members.json");
+  membersList.send();
+
+}
+
+// ---------------------------------End of JSON------------------------------------------
+
+
+/**
+ *
+ * @appData Management
+ */
+function isAllDataReady() {
+  console.info('isAllDataReady', counter++);
+  if (allJSONS[0] && allJSONS[1]) {
+    pageByURL();
+  }
+}
+function addList2appDataWithID(emptyList) {
+  let newID = uuid();
+
+  let newList = {
+    id: `${newID}`,
+    tasks: [],
+    title: `list Name ${addListCounter++}`
+  };
+
+  emptyList.setAttribute("uniqueID", newList.id);
+  appData.lists.push(newList);
+  console.info('after', newList.id);
+}
+function addCard2appDataWithID(listID) {
+
+  appData.lists.forEach((item) => {
+    if (item.id === listID) {
+
+      const newCard = {
+        members: [],
+        text: "i'm new"
+      };
+      item.tasks.push(newCard);
+
+    }
+  });
+}
+function editedTitleName2appData(currentListID, NameAfter) {
+
+  appData.lists.forEach((item) => {
+    if (item.id === currentListID) {
+      item.title = NameAfter;
+    }
+
+
+  });
+
+}
+function removeList2appData(currentListID) {
+  appData.lists.forEach((item, index) => {
+    if (item.id === currentListID) {
+      appData.lists.splice(index, 1);
+    }
+  });
+
+}
+function deleteMemberappData(memberName) {
+  appData.members.forEach((member) => {
+    console.info(member.name);
+    if (member.name === memberName) {
+      let index = appData.members.indexOf(member);
+      appData.members.splice(index, 1)
+    }
+  });
+}
+function addMember2appData(newMemberName, member) {
+  let newID = uuid();
+  const memberobj = {
+    name: '',
+    id:`${newID}`
+  };
+  memberobj.name = newMemberName;
+  member.setAttribute('uniqueID', newID);
+  appData.members.push(memberobj);
+
+}
+
+function saveMemberName(currentMemberID, memberNewName) {
+// console.info(currentMemberID);
+// console.info(appData.members);
+appData.members.forEach((member) => {
+  if (currentMemberID === member.id) {
+    member.name = memberNewName;
+  // console.info('got it' , member.name);
+  }
+
+})
+}
+
+
 addListEvents();
 
 
+/**
+ *
+ * UI Management
+ */
 function addList(data) {
   const listName = `list Name ${addListCounter}`;
-  // console.log('addList', counter++);
+
   const addListBtn = document.getElementById('btnClm');
   const emptyList = document.createElement('div');
   emptyList.className = 'list-column';
   emptyList.innerHTML = listTemplate;
   emptyList.querySelector('.p-header').innerHTML = listName;
-  // console.info(listTemplate);
+
   container.insertBefore(emptyList, addListBtn);
 
   if (data) {
@@ -143,19 +301,17 @@ function addList(data) {
       addCard(emptyList, task);
 
     }
+    if (data.id) {
+
+      emptyList.setAttribute("uniqueID", data.id);
+
+    }
+
   }
   if (!data) {
-    let newID = uuid.v1();
 
-    let newList = {
-      id: `${newID}`,
-      tasks: [],
-      title: `list Name ${addListCounter++}`
-    };
 
-    emptyList.setAttribute("uniqueID", newList.id);
-    appData.lists.push(newList);
-    console.info('after', newList.id);
+    addList2appDataWithID(emptyList);
 
   }
 
@@ -164,7 +320,7 @@ function addList(data) {
 
 }
 function addCardClickHandler(ev) {
-  // console.log('addList', counter++);
+
 
   const currentBtn = ev.target;
   const currentList = currentBtn.closest('.list-column');
@@ -175,7 +331,7 @@ function addCardClickHandler(ev) {
 
 }
 function addCard(targetUl, data) {
-  // console.log('addList', counter++);
+
   const newCard = document.createElement('li');
   newCard.setAttribute('class', 'liCard');
   const editCardBtn = document.createElement('button');
@@ -203,13 +359,27 @@ function addCard(targetUl, data) {
     targetUl.querySelector('.list').appendChild(newCard);
 
     if (data.members) {
+console.info('first', data.members);
+console.info('second', appData.members);
+      let currentListID = event.target.closest('.list-column').getAttribute('uniqueID');
+
+      appData.members.forEach((member) => {
+        if (currentMemberID === member.id) {
+          member.name = memberNewName;
+          // console.info('got it' , member.name);
+        }
+
+
+
+
+
+
 
       const title = data.members;
       const members = data.members;
       for (const member of members) {
         const spanElm = document.createElement('span');
         spanElm.setAttribute('class', 'label label-primary pull-right');
-
         spanElm.setAttribute('title', data.members);
         let initial = '';
 
@@ -220,7 +390,6 @@ function addCard(targetUl, data) {
           initial += namePart.charAt(0);
         }
 
-        //  console.log(initial);
 
         spanElm.textContent += initial;
         newCard.appendChild(spanElm);
@@ -230,26 +399,20 @@ function addCard(targetUl, data) {
 
     }
 
+
   }
 
   if (!data) {
 
+
     const targetList = targetUl.closest('.list-column');
 
-    const targetTitle = targetList.querySelector('p').textContent;
 
-    appData.lists.forEach((item) => {
+    const listID = targetList.getAttribute('uniqueID');
+    console.info(listID);
 
-      if (item.title === targetTitle) {
+    addCard2appDataWithID(listID);
 
-        const newCard = {
-          members: [],
-          text: "i'm new"
-        };
-        item.tasks.push(newCard);
-
-      }
-    });
   }
 
   addCardEvents(newCard);
@@ -270,7 +433,7 @@ function editName() {
   if (currentElm.textContent === '') {
     currentElm.textContent = 'Untitled list';
 
-    titleappDataHandler(untitled, untitled);
+    editedTitleName2appData(untitled, untitled);
   }
   input.value = currentElm.textContent;
   // Focus the Input Element
@@ -282,7 +445,8 @@ function editName() {
 
   function eventhandeler(event) {
 
-
+    let currentListID = event.target.closest('.list-column').getAttribute('uniqueID');
+    console.info(currentListID);
     currentElm.focus();
 
 
@@ -292,26 +456,18 @@ function editName() {
       let currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
       input.className = 'hiddenMy';
-      titleappDataHandler(currentElmBefore, currentElmAfter);
+
+      // editedTitleName2appData(currentElmBefore, currentElmAfter);
+      editedTitleName2appData(currentListID, currentElmAfter);
       if (currentElm.textContent === '') {
 
         currentElm.textContent = 'Untitled list';
-        //  titleappDataHandler(untitled,untitled);
-        //  currentElmAfter = untitled;
       }
-
-
-      /*   if (currentElm.textContent === //other like him)
-       titleappDataHandler(currentElmBefore, currentElmAfter);
-       //   eventhandeler();*/
-
     }
 
 
     if (event.type === evtblur) {
       const currentElmBefore = currentElm.innerHTML;
-
-
       currentElm.textContent = input.value;
       let currentElmAfter = currentElm.textContent;
       currentElm.className = 'p-header panel-heading header-list';
@@ -322,22 +478,9 @@ function editName() {
         currentElm.textContent = 'Untitled list';
         currentElmAfter = currentElm.textContent;
       }
-      titleappDataHandler(currentElmBefore, currentElmAfter);
+      editedTitleName2appData(currentListID, currentElmAfter);
     }
   }
-}
-function titleappDataHandler(NameBefore, NameAfter) {
-
-  appData.lists.forEach((item) => {
-    // console.info(item.title);
-    if (item.title === NameBefore) {
-      // console.info('found', item);
-      item.title = NameAfter;
-    }
-
-
-  });
-
 }
 function dropdownEdit() {
 
@@ -360,12 +503,9 @@ function dropdownEdit() {
 
   }
 }
-function removeList(target) {
-  // addListEvents();
-  // console.info(event.target);
+function removeList() {
+
   const currentBtn = event.target;
-//  const currentP = currentBtn.parentNode;
-//   const currentUl = currentBtn.closest('ul');
   const currentUl = event.target.closest('ul');
   //console.log(localDataList);
   if (event.type === evtClick) {
@@ -374,22 +514,16 @@ function removeList(target) {
     const currentHeader = currentBtn.closest('header');
     const titleName = currentHeader.querySelector('p').innerHTML;
 
+
     const isdelete = confirm(`Deleting , ${titleName}, Are u sure ?`);
     if (isdelete) {
       const currentList = currentBtn.closest('.list-column');
+      let currentListID =  currentList.getAttribute('uniqueID');
       const main = currentBtn.closest('main');
       main.removeChild(currentList);
       // remove from appData
 
-      appData.lists.forEach((item) => {
-        if (item.title === titleName) {
-          let index = appData.lists.indexOf(item);
-          /*      if (index > -1) {*/
-          appData.lists.splice(index, 1);
-          /*  }*/
-
-        }
-      });
+      removeList2appData(currentListID);
 
 
     }
@@ -400,7 +534,7 @@ function removeList(target) {
 
 
 function addCardEvents(target) {
-  // console.log('addList', counter++);
+
 
   const editCards = document.querySelectorAll('.editCard');
   for (const editCard of editCards) {
@@ -409,8 +543,6 @@ function addCardEvents(target) {
 
 
 }
-
-// Helpers
 function addListEvents(target) {
   // console.log('addList', counter++);
   const targetP = target || document;
@@ -486,87 +618,12 @@ function close() {
 }
 
 
-// ----------------------------------JSONS----------------------------------------------
-
-// board JSON
-function appDataBoard(data) {
-  console.log('appDataBoard', counter++);
-  const dataList = data.currentTarget;
-
-  const localDataList = dataList.responseText;
-  const results = JSON.parse(localDataList);
-  const resultsTitle = results.board;
-  appData.lists = results.board;
-  // console.info(appData);
-  allJSONS.push(True);
-  console.info('appDataBoard', 'Done');
-  isAllDataReady();
-
-  // pageByURL();
-  /*for (const result of resultsTitle) {
-
-   addList(result);
-
-   }*/
-
-}
-function getBoardData() {
-  console.log('getBoardData', counter++);
-
-
-  const dataList = new XMLHttpRequest();
-
-  dataList.addEventListener("load", appDataBoard);
-  dataList.open("GET", "assets/board.json");
-  dataList.send();
-
-
-}
-
-
-// Members JSON
-
-
-function appDataMember(data) {
-  console.log('appDataMember', counter++);
-
-  const membersList = data.currentTarget;
-  const localDataList = membersList.responseText;
-  const results = JSON.parse(localDataList);
-  appData.members = results.members;
-
-  allJSONS.push(True);
-
-  console.log('appDataMember', 'Done');
-  isAllDataReady();
-
-}
-
-// Members JSON loader
-function getMemberData() {
-
-  console.log('getMemberData', counter++);
-
-  const membersList = new XMLHttpRequest();
-  membersList.addEventListener("load", appDataMember);
-  membersList.open("GET", "assets/members.json");
-  membersList.send();
-
-}
-
-
-// ---------------------------------End of JSON------------------------------------------
-
-
 // ---------------------------------Member Page ------------------------------------------
 
 
 function addMember(data) {
   console.info('add Member', counter++);
 
-  /*  for (const name of appData.members) {
-   addMember(name);
-   }*/
   // Creating Member
   const listMember = document.querySelector('.list-group');
   const addMemberItem = document.querySelector('.addmember');
@@ -577,11 +634,13 @@ function addMember(data) {
   member.innerHTML = memberBtns;
   const memberName = member.querySelector('span');
   memberName.textContent = addMemberinputElm.value;
+  let newMemberName = memberName.textContent;
+
 // Insert Member to DOM
   listMember.insertBefore(member, addMemberItem);
-  const memberobj = {
-    name: ''
-  };
+  /* const memberobj = {
+   name: ''
+   };*/
 
 // Adding Event Listener
   let deleteBtnMember = member.querySelector('.deletemember');
@@ -593,29 +652,27 @@ function addMember(data) {
   if (data) {
     const memberName = member.querySelector('span');
     memberName.textContent = data.name;
+    member.setAttribute('uniqueID', data.id);
+
 
   }
   // Add to appData.members
   if (!data) {
-    memberobj.name = memberName.textContent;
-    appData.members.push(memberobj);
+    addMember2appData(newMemberName, member);
+
   }
 
 }
-
-
 function deleteMember(event) {
   let deleteBtnMember = event.target;
   console.info(deleteBtnMember);
   let currentMember = deleteBtnMember.closest('li');
   const memberName = currentMember.querySelector('span').textContent;
-  appData.members.forEach((member) => {
-    console.info(member.name);
-    if (member.name === memberName) {
-      let index = appData.members.indexOf(member);
-      appData.members.splice(index, 1)
-    }
-  });
+
+
+  // Delete From appData
+  deleteMemberappData(memberName);
+
 
   currentMember.remove();
 }
@@ -631,27 +688,37 @@ function toggleBtns() {
 
   });
 }
-
-
 function editMember(event) {
   toggleBtns(event);
   const target = event.target;
+console.info(target);
   const targetP = target.closest('.membernameinputbtns');
+
   const targetFather = targetP.parentNode;
 
   const targetInput = targetFather.querySelector('.membernameinput');
+
   targetInput.style.display = 'inline-block';
+
   targetInput.focus();
+
   targetInput.value = targetFather.querySelector('span').textContent;
+
   targetFather.querySelector('span').style.display = 'none';
   // let cancelBtnMember = targetP.querySelector('.cancelmember');
   targetP.style.display = 'block';
   const saveBtn = targetFather.querySelector('.savemember');
   saveBtn.addEventListener('click', () => {
+    let currentMemberID = targetFather.getAttribute('uniqueID');
+    // console.info(currentMemberID);
+
+
     targetFather.querySelector('span').textContent = targetInput.value;
     targetInput.style.display = 'none';
     targetFather.querySelector('span').style.display = 'inline-block';
+    let newMemberName = targetFather.querySelector('span').textContent;
     toggleBtns(event);
+    saveMemberName(currentMemberID, newMemberName);
   });
   const cancelBtn = targetFather.querySelector('.cancelmember');
   cancelBtn.addEventListener('click', () => {
@@ -664,7 +731,6 @@ function editMember(event) {
 
   });
 }
-
 function currentPage(data) {
   const topNav = document.querySelector('.nav-top');
 // console.log('currentPage', counter++);
@@ -683,7 +749,6 @@ function currentPage(data) {
   currentNotActive.classList.add('active');
 
 }
-
 function pageByURL() {
   // window.addEventListener('hashchange', () => pageByURL());
   console.log('pageByURL', counter++);
@@ -720,7 +785,6 @@ function pageByURL() {
 
 
 }
-
 function listView() {
   console.log('listView', counter++);
 
@@ -762,8 +826,6 @@ function memberView() {
   // console.info(deleteBtns);
 
 }
-
-
 function multiJSON() {
   console.info('multiJSON', counter++);
   window.addEventListener('hashchange', () => pageByURL());
@@ -773,12 +835,6 @@ function multiJSON() {
 }
 multiJSON();
 
-function isAllDataReady() {
-  console.info('isAllDataReady', counter++);
-  if (allJSONS[0] && allJSONS[1]) {
-    pageByURL();
-  }
-}
 
 
 

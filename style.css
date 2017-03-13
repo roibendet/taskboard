@@ -261,11 +261,19 @@ div > a {
 
 .member {
   width: 50%;
+  line-height: 4rem;
+  min-height: 60px;
+
+}
+.member input {
+  padding: 0;
+  border: 0;
 }
 
 
 #addmemberinput {
   width: 50%;
+
 }
 
 .membernameinputbtns {
