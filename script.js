@@ -361,13 +361,7 @@ function addCard(targetUl, data) {
     if (data.members) {
 console.info('first', data.members);
 console.info('second', appData.members);
-      let currentListID = event.target.closest('.list-column').getAttribute('uniqueID');
 
-      appData.members.forEach((member) => {
-        if (currentMemberID === member.id) {
-          member.name = memberNewName;
-          // console.info('got it' , member.name);
-        }
 
 
 
