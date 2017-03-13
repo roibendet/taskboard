@@ -148,7 +148,7 @@ function getBoardData() {
   const dataList = new XMLHttpRequest();
 
   dataList.addEventListener("load", appDataBoard);
-  dataList.open("GET", "assets/board-advanced.json");
+  dataList.open("GET", "assets/board.json");
   dataList.send();
 
 
