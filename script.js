@@ -46,18 +46,7 @@ const cardTemplate = `
                   </label>
 
                   <div class="form-check">
-                    <div class="test form-control">
-                      <label class="form-check-label">Member1
-                        <input class="form-check-input pull-left" type="checkbox" value="member"></label>
-                      <label class="form-check-label">Member2
-                        <input class="form-check-input pull-left" type="checkbox" value="member"> </label>
-                      <label class="form-check-label">Member3 <input class="form-check-input pull-left" type="checkbox"
-                                                                              value="member">
-                    </label>
-                      <label class="form-check-label">Member3 <input class="form-check-input pull-left" type="checkbox"
-                                                                     value="member">
-                      </label>
-                    </div>
+                    <div class="test form-control listofmembers"></div>
                   </div>
 
                 </div>
@@ -100,6 +89,8 @@ const memberBtns = `
   </div>
   `
 
+const memberInModal = `<input class="form-check-input pull-left" type="checkbox" value="">`;
+
 
 const addListBtnElm = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`
 const appData = {
@@ -115,6 +106,7 @@ const True = 'true';
 const allJSONS = [];
 const untitled = 'Untitled list';
 let addListCounter = 1;
+let newName = '';
 
 
 // ----------------------------------JSONS----------------------------------------------
@@ -126,19 +118,13 @@ function appDataBoard(data) {
 
   const localDataList = dataList.responseText;
   const results = JSON.parse(localDataList);
-  const resultsTitle = results.board;
+
   appData.lists = results.board;
-  // console.info(appData);
+
   allJSONS.push(True);
-  console.info('appDataBoard', 'Done');
+  // console.info('appDataBoard', 'Done');
   isAllDataReady();
 
-  // pageByURL();
-  /*for (const result of resultsTitle) {
-
-   addList(result);
-
-   }*/
 
 }
 function getBoardData() {
@@ -148,7 +134,8 @@ function getBoardData() {
   const dataList = new XMLHttpRequest();
 
   dataList.addEventListener("load", appDataBoard);
-  dataList.open("GET", "assets/board.json");
+  dataList.open("GET", "assets/board-advanced.json");
+  // dataList.open("GET", "assets/board.json");
   dataList.send();
 
 
@@ -164,7 +151,7 @@ function appDataMember(data) {
 
   allJSONS.push(True);
 
-  console.log('appDataMember', 'Done');
+  // console.log('appDataMember', 'Done');
   isAllDataReady();
 
 }
@@ -179,6 +166,7 @@ function getMemberData() {
   membersList.send();
 
 }
+
 
 // ---------------------------------End of JSON------------------------------------------
 
@@ -206,16 +194,20 @@ function addList2appDataWithID(emptyList) {
   appData.lists.push(newList);
   console.info('after', newList.id);
 }
-function addCard2appDataWithID(listID) {
+function addCard2appDataWithID(listID, CardID) {
 
   appData.lists.forEach((item) => {
     if (item.id === listID) {
 
       const newCard = {
+        id: `${CardID}`,
         members: [],
         text: "i'm new"
       };
+
       item.tasks.push(newCard);
+      console.info(newCard.id);
+
 
     }
   });
@@ -252,24 +244,23 @@ function addMember2appData(newMemberName, member) {
   let newID = uuid();
   const memberobj = {
     name: '',
-    id:`${newID}`
+    id: `${newID}`
   };
   memberobj.name = newMemberName;
   member.setAttribute('uniqueID', newID);
   appData.members.push(memberobj);
 
 }
-
 function saveMemberName(currentMemberID, memberNewName) {
 // console.info(currentMemberID);
 // console.info(appData.members);
-appData.members.forEach((member) => {
-  if (currentMemberID === member.id) {
-    member.name = memberNewName;
-  // console.info('got it' , member.name);
-  }
+  appData.members.forEach((member) => {
+    if (currentMemberID === member.id) {
+      member.name = memberNewName;
+      // console.info('got it' , member.name);
+    }
 
-})
+  })
 }
 
 
@@ -280,12 +271,22 @@ addListEvents();
  *
  * UI Management
  */
+function ID2Name(namePart) {
+  console.info(namePart);
+  appData.members.forEach((member) => {
+    if (namePart === member.id) {
+      return newName = member.name;
+    }
+  });
+
+}
+
 function addList(data) {
   const listName = `list Name ${addListCounter}`;
 
   const addListBtn = document.getElementById('btnClm');
   const emptyList = document.createElement('div');
-  emptyList.className = 'list-column';
+  emptyList.className = 'list-column list-group';
   emptyList.innerHTML = listTemplate;
   emptyList.querySelector('.p-header').innerHTML = listName;
 
@@ -333,13 +334,15 @@ function addCardClickHandler(ev) {
 function addCard(targetUl, data) {
 
   const newCard = document.createElement('li');
-  newCard.setAttribute('class', 'liCard');
+  const newCardSpan = document.createElement('span');
+  newCard.appendChild(newCardSpan);
+  newCard.setAttribute('class', 'liCard list-group-item');
   const editCardBtn = document.createElement('button');
-  editCardBtn.setAttribute('class', 'editCard');
+  editCardBtn.setAttribute('class', 'editCard btn btn btn-primary btn-xs');
   editCardBtn.setAttribute('data-toggle', 'modal');
   editCardBtn.setAttribute('data-target', 'myModal');
   editCardBtn.innerHTML = 'Edit List';
-  newCard.innerHTML = "i'm new";
+  newCard.innerHTML = "<span>i'm new</span>";
 
   targetUl.appendChild(newCard);
   newCard.appendChild(editCardBtn);
@@ -353,40 +356,50 @@ function addCard(targetUl, data) {
 
   if (data) {
 
-    newCard.textContent = data.text;
+
+    newCard.setAttribute('uniqueID', data.id);
+    newCard.querySelector('span').textContent = data.text;
     newCard.appendChild(editCardBtn);
     newCard.appendChild(modal);
     targetUl.querySelector('.list').appendChild(newCard);
 
+
     if (data.members) {
-console.info('first', data.members);
-console.info('second', appData.members);
-
-
-
-
-
-
 
 
       const title = data.members;
       const members = data.members;
+
+      // console.info(ID2Name(members));
+      ID2Name();
+      const bottom = document.createElement('div');
+      bottom.setAttribute('class', 'bottomMy');
+
       for (const member of members) {
+
         const spanElm = document.createElement('span');
-        spanElm.setAttribute('class', 'label label-primary pull-right');
         spanElm.setAttribute('title', data.members);
+
+        spanElm.setAttribute('class', 'label label-primary pull-right');
+
+        bottom.appendChild(spanElm);
         let initial = '';
 
+        // console.info('this',members);
         const currentName = member.split(' ');
 
         for (const namePart of currentName) {
+          // console.info(namePart);
+          // ID2Name(namePart);
 
+
+          // initial += namePart.charAt(0);
           initial += namePart.charAt(0);
         }
 
 
         spanElm.textContent += initial;
-        newCard.appendChild(spanElm);
+        newCard.appendChild(bottom);
 
       }
 
@@ -400,12 +413,11 @@ console.info('second', appData.members);
 
 
     const targetList = targetUl.closest('.list-column');
-
-
     const listID = targetList.getAttribute('uniqueID');
-    console.info(listID);
 
-    addCard2appDataWithID(listID);
+    let newCardID = uuid();
+    newCard.setAttribute('uniqueID', newCardID);
+    addCard2appDataWithID(listID, newCardID);
 
   }
 
@@ -512,7 +524,7 @@ function removeList() {
     const isdelete = confirm(`Deleting , ${titleName}, Are u sure ?`);
     if (isdelete) {
       const currentList = currentBtn.closest('.list-column');
-      let currentListID =  currentList.getAttribute('uniqueID');
+      let currentListID = currentList.getAttribute('uniqueID');
       const main = currentBtn.closest('main');
       main.removeChild(currentList);
       // remove from appData
@@ -582,37 +594,115 @@ function editCardDisplay(ev) {
 
   if (ev.type === 'click') {
     const Elm = ev.target;
-//    console.log('1', Elm);
+
     const li = Elm.closest('li');
-//    console.log('2', li);
+
     const modalElm = li.querySelector(".modal");
-//    console.log(modalElm);
+
 
     modalElm.setAttribute('class', "modal fade in");
     modalElm.style.display = 'block';
 
+// Find the text inside the card and present it in the modal
+    const currentCardID = li.getAttribute('uniqueID');
+    const currentListID = li.closest('.list-column').getAttribute('uniqueID');
 
-    //  const closeBtn = document.querySelector('.close');
-    //  closeBtn.addEventListener('click', close);
 
+    modal(currentCardID, currentListID);
 
   }
 }
+
+function modal(currentCardID, currentListID) {
+  let currentList = {};
+  let iList = -1;
+  appData.lists.forEach((list, index) => {
+    if (list.id === currentListID) {
+      currentList = list;
+      iList = index;
+    }
+  });
+  let currentCard = {};
+  let i = -1;
+  const allLists = document.querySelectorAll('.list-column');
+  const allCardsInList = allLists[iList].querySelectorAll('.liCard');
+
+  // current Card Finder
+  currentList.tasks.forEach((card, index) => {
+    if (card.id === currentCardID) {
+      currentCard = card;
+      i = index;
+    }
+
+  });
+
+  const currentCardUI = allCardsInList[i];
+  let textformodal = currentCardUI.querySelector('textarea');
+  textformodal.value = currentCard.text;
+
+
+  const listOfMembers = currentCardUI.querySelector('.listofmembers');
+
+
+  let checkedMembers = [];
+  // Creating members in modal
+
+
+  appData.members.forEach((member) => {
+    const memberInModalElm = document.createElement('label');
+    memberInModalElm.setAttribute('class', 'form-check-label');
+    memberInModalElm.innerHTML += member.name + memberInModal;
+    listOfMembers.appendChild(memberInModalElm);
+
+
+
+
+
+    appData.lists.forEach((list) => {
+      list.tasks.forEach((task) => {
+        if (task.id === currentCardID) {
+          checkedMembers = task.members;
+
+
+        }
+      })
+    });
+    // console.info(memberInModalElm,checkedMembers);
+    // console.info(memberInModalElm);
+    // console.info(listOfMembers);
+
+    /*    console.info(membersNameInModalElm.length);
+     membersNameInModalElm.forEach((member) => {
+     console.info(member.innerText);
+     })*/
+
+  });
+
+
+
+
+  const membersNameInModalElm = listOfMembers.querySelectorAll('label');
+  // console.info(membersNameInModalElm);
+}
+
+
 function close() {
-  const Elm = event.target;
+  let Elm = event.target;
 
-  const li = Elm.closest('li');
-  // console.log(li);
-  const modalElm = li.querySelector(".modal");
-  // console.log(modalElm);
-
+  let li = Elm.closest('li');
+  let modalElm = li.querySelector(".modal");
   modalElm.setAttribute('class', "modal fade");
   modalElm.style.display = 'none';
+  // console.info(modalElm);
+  const listOfMembers = modalElm.querySelector('.listofmembers');
+  listOfMembers.innerHTML = '';
+
+
 
 }
 
 
-// ---------------------------------Member Page ------------------------------------------
+// ---------------------------------Members Page ------------------------------------------
 
 
 function addMember(data) {
@@ -632,15 +722,13 @@ function addMember(data) {
 
 // Insert Member to DOM
   listMember.insertBefore(member, addMemberItem);
-  /* const memberobj = {
-   name: ''
-   };*/
+
 
 // Adding Event Listener
   let deleteBtnMember = member.querySelector('.deletemember');
   deleteBtnMember.addEventListener('click', () => deleteMember(event));
   let editBtnMember = member.querySelector('.editmember');
-  // console.info(editBtnMember);
+
   editBtnMember.addEventListener('click', () => editMember(event));
 
   if (data) {
@@ -648,13 +736,13 @@ function addMember(data) {
     memberName.textContent = data.name;
     member.setAttribute('uniqueID', data.id);
 
-
   }
   // Add to appData.members
   if (!data) {
     addMember2appData(newMemberName, member);
 
   }
+  addMemberinputElm.value = '';
 
 }
 function deleteMember(event) {
@@ -685,7 +773,7 @@ function toggleBtns() {
 function editMember(event) {
   toggleBtns(event);
   const target = event.target;
-console.info(target);
+  console.info(target);
   const targetP = target.closest('.membernameinputbtns');
 
   const targetFather = targetP.parentNode;
@@ -699,14 +787,12 @@ console.info(target);
   targetInput.value = targetFather.querySelector('span').textContent;
 
   targetFather.querySelector('span').style.display = 'none';
-  // let cancelBtnMember = targetP.querySelector('.cancelmember');
+
   targetP.style.display = 'block';
   const saveBtn = targetFather.querySelector('.savemember');
   saveBtn.addEventListener('click', () => {
     let currentMemberID = targetFather.getAttribute('uniqueID');
-    // console.info(currentMemberID);
-
-
+    targetP.style.display = '';
     targetFather.querySelector('span').textContent = targetInput.value;
     targetInput.style.display = 'none';
     targetFather.querySelector('span').style.display = 'inline-block';
@@ -716,10 +802,10 @@ console.info(target);
   });
   const cancelBtn = targetFather.querySelector('.cancelmember');
   cancelBtn.addEventListener('click', () => {
+    targetP.style.display = '';
 
-    //targetFather.querySelector('span').textContent = targetInput.value;
     targetInput.style.display = 'none';
-    targetFather.classList.toggle('hiddenMy');
+
     targetFather.querySelector('span').style.display = 'inline-block';
     toggleBtns(event);
 
@@ -749,7 +835,7 @@ function pageByURL() {
   const currentHash = window.location.hash;
 
 
-  if (currentHash === '#member') {
+  if (currentHash === '#members') {
 
     memberView();
     container.classList.add('memberview');
@@ -766,7 +852,7 @@ function pageByURL() {
     currentPage(currentHash);
 
   }
-  if ((currentHash !== '#board' && currentHash !== '#member') || currentHash === '') {
+  if ((currentHash !== '#board' && currentHash !== '#members') || currentHash === '') {
     window.location.hash = '#board';
 
   }
