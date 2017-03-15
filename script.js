@@ -113,6 +113,9 @@ let memberInModalElm;
 
 let memberchecked = [];
 let memberunchecked = [];
+let temp = [];
+let newmembers = [];
+let newermembers = [];
 
 
 // ----------------------------------JSONS----------------------------------------------
@@ -282,6 +285,30 @@ function saveText2appData(cardID, listID, newText) {
     }
   })
 }
+function checkedMemberInModal2appData(currentListID,currentCardID, memberChecked) {
+
+  appData.lists.forEach((list) => {
+    if (list.id === currentListID) {
+      list.tasks.forEach((task) => {
+        if (task.id === currentCardID) {
+          task.members = {};
+          task.members = memberChecked;
+        }
+      })
+    }
+  });
+}
+function deleteCardFromappData(currentListID,currentCardID) {
+  appData.lists.forEach((list) => {
+    if (list.id === currentListID) {
+      list.tasks.forEach((task, i) => {
+        if (task.id === currentCardID) {
+          list.tasks.splice(i, 1);
+        }
+      })
+    }
+  });
+}
 
 
 addListEvents();
@@ -291,7 +318,7 @@ addListEvents();
  *
  * UI Management
  */
-let newmembers = [];
+
 function ID2Name(data) {
   data.forEach((memberIndata) => {
     appData.members.forEach((member) => {
@@ -302,17 +329,12 @@ function ID2Name(data) {
   });
 
 }
-let newermembers = [];
-function name2ID(data) {
-  data.forEach((memberIndata) => {
-    appData.members.forEach((member) => {
-      if (memberIndata === member.name) {
-        return newermembers.push(member.id);
-      }
-    });
-  });
-}
 
+
+/**
+ *
+ * @Board Page
+ */
 function addList(data) {
   const listName = `list Name ${addListCounter}`;
 
@@ -518,7 +540,6 @@ function dropdownEdit() {
 
   const currentP = currentBtn.closest('.input-group-btn');
   const currentUl = currentP.querySelector('ul');
-  // const delBtn = currentUl.querySelector('li a');
 
 
   if (currentUl.style.display = 'none') {
@@ -560,8 +581,6 @@ function removeList() {
     currentUl.style.display = 'none';
   }
 }
-
-
 function addCardEvents(target) {
 
 
@@ -627,59 +646,29 @@ function deleteCard() {
   let currentBtn = event.target;
   let currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
   let currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
-  let i = -1;
-  appData.lists.forEach((list) => {
-    if (list.id === currentListID) {
-      list.tasks.forEach((task, index) => {
-        if (task.id === currentCardID) {
-          i = index;
-          // console.info(index);
-          list.tasks.splice(i, 1);
-        }
-      })
-    }
-  })
+  deleteCardFromappData(currentListID,currentCardID);
   close();
   listView();
-
 }
-let temp = [];
 function save() {
   let currentBtn = event.target;
   let modalContent = currentBtn.closest('.modal-content');
   let textareaNew = modalContent.querySelector('textarea');
-
   let currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
   let currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
   let allMemberInputs = currentBtn.closest('.liCard').querySelectorAll(`[uniqueID]`);
 
+  // Find the current checked members in the modal
   allMemberInputs.forEach((memberInput) => {
     if (memberInput.checked === true) {
-      // console.info('found it', memberInput.getAttribute('uniqueID'));
       memberchecked.push(memberInput.getAttribute('uniqueID'));
 
     }
-    if (memberInput.checked === false) {
-      // console.info('found not checked');
-      memberunchecked.push(memberInput.getAttribute('uniqueID'));
-    }
   });
 
 
-  appData.lists.forEach((list) => {
-    if (list.id === currentListID) {
-      list.tasks.forEach((task) => {
-        if (task.id === currentCardID) {
-          console.info('current members', task.members);
-          task.members = {};
-          task.members = memberchecked;
-          console.info('after', task.members);
-        }
-      })
-    }
-  });
-
-
+  // Save the current checked members in the modal in appData
+  checkedMemberInModal2appData(currentListID,currentCardID, memberchecked);
   saveText2appData(currentCardID, currentListID, textareaNew.value);
   close.call(event.target);
 
@@ -687,8 +676,6 @@ function save() {
   listView();
 
 }
-
-
 function editCardDisplay(ev) {
 
 
@@ -710,8 +697,6 @@ function editCardDisplay(ev) {
 
   }
 }
-
-
 function modal(currentCardID, currentListID) {
   let currentList = {};
   let iList = -1;
@@ -747,12 +732,12 @@ function modal(currentCardID, currentListID) {
   appData.members.forEach((member) => {
     memberInModalElm = document.createElement('label');
     memberInModalElm.setAttribute('class', 'form-check-label');
-
     memberInModalElm.innerHTML += member.name + memberInModal;
     listOfMembers.appendChild(memberInModalElm);
     modalMemberInput = memberInModalElm.querySelector('input');
     modalMemberInput.setAttribute('uniqueID', member.id);
 
+    // Finding and converting Members ID to name
     appData.lists.forEach((list) => {
       list.tasks.forEach((task) => {
         if (task.id === currentCardID) {
@@ -768,8 +753,6 @@ function modal(currentCardID, currentListID) {
     });
   });
 }
-
-
 function close() {
   newmembers = [];
   memberchecked = [];
@@ -809,9 +792,10 @@ function close() {
 }
 
 
-// ---------------------------------Members Page ------------------------------------------
-
-
+/**
+ *
+ * @Members Page
+ */
 function addMember(data) {
   console.info('add Member', counter++);
 
@@ -925,6 +909,12 @@ function editMember(event) {
 
   });
 }
+
+
+/**
+ *
+ * @Operating UI
+ */
 function currentPage(data) {
   const topNav = document.querySelector('.nav-top');
 // console.log('currentPage', counter++);
@@ -997,10 +987,7 @@ function listView() {
 }
 function memberView() {
   console.log('memberView', counter++);
-
-
   container.innerHTML = member;
-
   const addMemberinputElm = document.getElementById('addmemberinput');
   const addMemberBtn = document.querySelector('.addmemberbtn');
 
@@ -1017,7 +1004,7 @@ function memberView() {
     addMember(result);
   }
 
-  const deleteBtns = document.querySelectorAll('.deletemember');
+  // const deleteBtns = document.querySelectorAll('.deletemember');
 
 
 }
