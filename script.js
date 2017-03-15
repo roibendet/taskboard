@@ -51,7 +51,7 @@ const cardTemplate = `
 
                 </div>
                 <div class="modal-body modal-bodymy">
-                  <button type="button" class="btn btn-danger deletebtn">Delete Card</button>
+                  <button type="button" class="btn btn-danger deletebtn deletemy">Delete Card</button>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default closemy" data-dismiss="modal">Close</button>
@@ -595,6 +595,12 @@ function addListEvents(target) {
     saveBtn.addEventListener('click', save);
   }
 
+  const delBtns = targetP.querySelectorAll('.deletemy');
+
+  for (let delBtn of delBtns) {
+    delBtn.addEventListener('click', deleteCard)
+  }
+
   for (let list of Lists) {
     list.addEventListener("click", editName);
   }
@@ -613,6 +619,26 @@ function addListEvents(target) {
 
   }
 
+
+}
+function deleteCard() {
+  let currentBtn = event.target;
+  let currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
+  let currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
+  let i = -1;
+  appData.lists.forEach((list) => {
+    if (list.id === currentListID) {
+      list.tasks.forEach((task, index) => {
+        if (task.id === currentCardID) {
+          i = index;
+          console.info(index);
+          list.tasks.splice(i, 1);
+        }
+      })
+    }
+  })
+  close();
+  listView();
 
 }
 let temp = [];
