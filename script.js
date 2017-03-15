@@ -254,6 +254,8 @@ function addMember2appData(newMemberName, member) {
   };
   memberobj.name = newMemberName;
   member.setAttribute('uniqueID', newID);
+
+
   appData.members.push(memberobj);
 
 }
@@ -631,7 +633,7 @@ function deleteCard() {
       list.tasks.forEach((task, index) => {
         if (task.id === currentCardID) {
           i = index;
-          console.info(index);
+          // console.info(index);
           list.tasks.splice(i, 1);
         }
       })
@@ -823,7 +825,12 @@ function addMember(data) {
   member.innerHTML = memberBtns;
   const memberName = member.querySelector('span');
   memberName.textContent = addMemberinputElm.value;
+
+  if (memberName.textContent.length === 0) {
+    memberName.textContent = 'No Name';
+  }
   let newMemberName = memberName.textContent;
+
 
 // Insert Member to DOM
   listMember.insertBefore(member, addMemberItem);
@@ -844,6 +851,8 @@ function addMember(data) {
   }
   // Add to appData.members
   if (!data) {
+
+
     addMember2appData(newMemberName, member);
 
   }
