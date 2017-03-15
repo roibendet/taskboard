@@ -55,7 +55,7 @@ const cardTemplate = `
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default closemy" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="button" class="btn btn-primary savemy">Save changes</button>
                 </div>
               </div>
             </div>
@@ -107,6 +107,9 @@ const allJSONS = [];
 const untitled = 'Untitled list';
 let addListCounter = 1;
 let newName = '';
+
+let modalMemberInput = {};
+let memberInModalElm;
 
 
 // ----------------------------------JSONS----------------------------------------------
@@ -262,6 +265,18 @@ function saveMemberName(currentMemberID, memberNewName) {
 
   })
 }
+function saveText2appData(cardID, listID, newText) {
+
+  appData.lists.forEach((list) => {
+    if (list.id === listID) {
+      list.tasks.forEach((task) => {
+        if (task.id === cardID) {
+          task.text = newText
+        }
+      })
+    }
+  })
+}
 
 
 addListEvents();
@@ -271,12 +286,14 @@ addListEvents();
  *
  * UI Management
  */
-function ID2Name(namePart) {
-  console.info(namePart);
-  appData.members.forEach((member) => {
-    if (namePart === member.id) {
-      return newName = member.name;
-    }
+let newmembers = [];
+function ID2Name(data) {
+  data.forEach((memberIndata) => {
+    appData.members.forEach((member) => {
+      if (memberIndata === member.id) {
+        return newmembers.push(member.name);
+      }
+    });
   });
 
 }
@@ -362,47 +379,38 @@ function addCard(targetUl, data) {
     newCard.appendChild(editCardBtn);
     newCard.appendChild(modal);
     targetUl.querySelector('.list').appendChild(newCard);
-
-
+    const members = data.members;
+    ID2Name(members);
+    const title = newmembers;
     if (data.members) {
 
-
-      const title = data.members;
-      const members = data.members;
-
-      // console.info(ID2Name(members));
-      ID2Name();
       const bottom = document.createElement('div');
       bottom.setAttribute('class', 'bottomMy');
 
-      for (const member of members) {
+      for (const member of newmembers) {
 
         const spanElm = document.createElement('span');
-        spanElm.setAttribute('title', data.members);
+        spanElm.setAttribute('title', newmembers.toString());
 
         spanElm.setAttribute('class', 'label label-primary pull-right');
 
         bottom.appendChild(spanElm);
         let initial = '';
 
-        // console.info('this',members);
         const currentName = member.split(' ');
 
         for (const namePart of currentName) {
-          // console.info(namePart);
-          // ID2Name(namePart);
 
 
-          // initial += namePart.charAt(0);
           initial += namePart.charAt(0);
         }
+        newmembers = [];
 
 
         spanElm.textContent += initial;
         newCard.appendChild(bottom);
 
       }
-
 
     }
 
@@ -568,6 +576,11 @@ function addListEvents(target) {
   for (let closeBtn of closeBtns) {
     closeBtn.addEventListener('click', close);
   }
+  const saveBtns = targetP.querySelectorAll('.savemy');
+
+  for (let saveBtn of saveBtns) {
+    saveBtn.addEventListener('click', save);
+  }
 
   for (let list of Lists) {
     list.addEventListener("click", editName);
@@ -589,6 +602,24 @@ function addListEvents(target) {
 
 
 }
+
+function save() {
+  const currentBtn = event.target;
+  const modalContent = currentBtn.closest('.modal-content');
+  const textareaNew = modalContent.querySelector('textarea');
+
+  const currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
+  const currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
+  console.info(currentListID);
+  console.info(textareaNew.value);
+
+  saveText2appData(currentCardID,currentListID,textareaNew.value);
+close.call(event.target);
+listView();
+}
+
+
+
 function editCardDisplay(ev) {
 
 
@@ -606,12 +637,11 @@ function editCardDisplay(ev) {
 // Find the text inside the card and present it in the modal
     const currentCardID = li.getAttribute('uniqueID');
     const currentListID = li.closest('.list-column').getAttribute('uniqueID');
-
-
     modal(currentCardID, currentListID);
 
   }
 }
+
 
 function modal(currentCardID, currentListID) {
   let currentList = {};
@@ -636,68 +666,71 @@ function modal(currentCardID, currentListID) {
 
   });
 
+  // insert data to text area from appdata
   const currentCardUI = allCardsInList[i];
   let textformodal = currentCardUI.querySelector('textarea');
   textformodal.value = currentCard.text;
 
-
+// items for member part of the modal
   const listOfMembers = currentCardUI.querySelector('.listofmembers');
-
-
   let checkedMembers = [];
   // Creating members in modal
-
-
   appData.members.forEach((member) => {
-    const memberInModalElm = document.createElement('label');
+    memberInModalElm = document.createElement('label');
     memberInModalElm.setAttribute('class', 'form-check-label');
     memberInModalElm.innerHTML += member.name + memberInModal;
     listOfMembers.appendChild(memberInModalElm);
-
-
-
+    modalMemberInput = memberInModalElm.querySelector('input');
 
 
     appData.lists.forEach((list) => {
       list.tasks.forEach((task) => {
         if (task.id === currentCardID) {
           checkedMembers = task.members;
-
-
         }
       })
     });
-    // console.info(memberInModalElm,checkedMembers);
-    // console.info(memberInModalElm);
-    // console.info(listOfMembers);
-
-    /*    console.info(membersNameInModalElm.length);
-     membersNameInModalElm.forEach((member) => {
-     console.info(member.innerText);
-     })*/
-
+    ID2Name(checkedMembers);
+    newmembers.forEach((member) => {
+      if (memberInModalElm.textContent === member) {
+        modalMemberInput.checked = true;
+      }
+    });
   });
-
-
-
-
-  const membersNameInModalElm = listOfMembers.querySelectorAll('label');
-  // console.info(membersNameInModalElm);
 }
 
 
 function close() {
+  newmembers = [];
   let Elm = event.target;
 
   let li = Elm.closest('li');
   let modalElm = li.querySelector(".modal");
   modalElm.setAttribute('class', "modal fade");
   modalElm.style.display = 'none';
-  // console.info(modalElm);
   const listOfMembers = modalElm.querySelector('.listofmembers');
+  // console.info(modalMemberInput);
+
+
+  // modalMemberInput.checked = false;
+  // let checkMembers = Elm.querySelectorAll('.form-check-input');
+  // console.info(modalMemberInput);
+  /*  let checkedMembers = document.querySelectorAll('.form-check-input');
+   checkedMembers.forEach((m) => {
+   console.info(m.checked);
+   m.setAttribute('checked','none');
+   });*/
+  // console.info(checkedMembers.getAttribute('checked'));
+  // checkedMembers.checked = false;
+  // modalElm.querySelectorAll('.form-check-input').forEach((m) => {
+// console.info(m);
+//     console.info(m.checked);
+// m.checked = false;
+//     console.info(m.checked);
+//   });
+
+
   listOfMembers.innerHTML = '';
-
-
 
 }
 
