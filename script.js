@@ -111,6 +111,9 @@ let newName = '';
 let modalMemberInput = {};
 let memberInModalElm;
 
+let memberchecked = [];
+let memberunchecked = [];
+
 
 // ----------------------------------JSONS----------------------------------------------
 
@@ -296,6 +299,16 @@ function ID2Name(data) {
     });
   });
 
+}
+let newermembers = [];
+function name2ID(data) {
+  data.forEach((memberIndata) => {
+    appData.members.forEach((member) => {
+      if (memberIndata === member.name) {
+        return newermembers.push(member.id);
+      }
+    });
+  });
 }
 
 function addList(data) {
@@ -602,22 +615,50 @@ function addListEvents(target) {
 
 
 }
-
+let temp = [];
 function save() {
-  const currentBtn = event.target;
-  const modalContent = currentBtn.closest('.modal-content');
-  const textareaNew = modalContent.querySelector('textarea');
+  let currentBtn = event.target;
+  let modalContent = currentBtn.closest('.modal-content');
+  let textareaNew = modalContent.querySelector('textarea');
 
-  const currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
-  const currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
-  console.info(currentListID);
-  console.info(textareaNew.value);
+  let currentCardID = currentBtn.closest('.liCard').getAttribute('uniqueID');
+  let currentListID = currentBtn.closest('.list-column').getAttribute('uniqueID');
+  let allMemberInputs = currentBtn.closest('.liCard').querySelectorAll(`[uniqueID]`);
 
-  saveText2appData(currentCardID,currentListID,textareaNew.value);
-close.call(event.target);
-listView();
+  allMemberInputs.forEach((memberInput) => {
+    if (memberInput.checked === true) {
+      // console.info('found it', memberInput.getAttribute('uniqueID'));
+      memberchecked.push(memberInput.getAttribute('uniqueID'));
+
+    }
+    if (memberInput.checked === false) {
+      // console.info('found not checked');
+      memberunchecked.push(memberInput.getAttribute('uniqueID'));
+    }
+  });
+
+
+  appData.lists.forEach((list) => {
+    if (list.id === currentListID) {
+      list.tasks.forEach((task) => {
+        if (task.id === currentCardID) {
+          console.info('current members', task.members);
+          task.members = {};
+          task.members = memberchecked;
+          console.info('after', task.members);
+        }
+      })
+    }
+  });
+
+
+  saveText2appData(currentCardID, currentListID, textareaNew.value);
+  close.call(event.target);
+
+
+  listView();
+
 }
-
 
 
 function editCardDisplay(ev) {
@@ -678,10 +719,11 @@ function modal(currentCardID, currentListID) {
   appData.members.forEach((member) => {
     memberInModalElm = document.createElement('label');
     memberInModalElm.setAttribute('class', 'form-check-label');
+
     memberInModalElm.innerHTML += member.name + memberInModal;
     listOfMembers.appendChild(memberInModalElm);
     modalMemberInput = memberInModalElm.querySelector('input');
-
+    modalMemberInput.setAttribute('uniqueID', member.id);
 
     appData.lists.forEach((list) => {
       list.tasks.forEach((task) => {
@@ -702,6 +744,10 @@ function modal(currentCardID, currentListID) {
 
 function close() {
   newmembers = [];
+  memberchecked = [];
+  memberunchecked = [];
+
+  temp = [];
   let Elm = event.target;
 
   let li = Elm.closest('li');
@@ -912,6 +958,7 @@ function listView() {
     addList(result);
   }
 
+
 }
 function memberView() {
   console.log('memberView', counter++);
@@ -936,7 +983,7 @@ function memberView() {
   }
 
   const deleteBtns = document.querySelectorAll('.deletemember');
-  // console.info(deleteBtns);
+
 
 }
 function multiJSON() {
@@ -947,6 +994,15 @@ function multiJSON() {
 
 }
 multiJSON();
+
+
+
+
+
+
+
+
+
 
 
 
