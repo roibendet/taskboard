@@ -20,6 +20,9 @@ html * {
 body {
   padding-top: 80px;
   /*background-color: #8c8c8c;*/
+  /*margin-right: 50px;*/
+  /*padding-right: 50px;*/
+  /*border: 50px;*/
 }
 
 .navbar-default {
@@ -60,6 +63,7 @@ div > a {
 .containerr {
 
   display: inline-flex;
+  /*display: flex;*/
   align-items: flex-start;
   /*justify-content: space-around;*/
   margin-top: 30px;
@@ -150,6 +154,7 @@ div > a {
   margin-top: -43px;
   padding: 10px 80px;
   text-align: center;
+
 }
 
 .card {
@@ -175,6 +180,10 @@ div > a {
 .dropdown-menu {
   left: inherit;
   right: 0;
+  /*display: block;*/
+}
+.show {
+  display: block;
 }
 
 /*.list-column li:last-child {
@@ -288,6 +297,7 @@ div > a {
 
 .deletebtn {
   text-align: left;
+  /*display: block;*/
 }
 
 .modal-bodymy {
