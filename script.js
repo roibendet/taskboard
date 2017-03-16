@@ -18,7 +18,7 @@ const listTemplate = `
       <ul class="list"></ul>
     </div>
     <footer>
-      <button class="btn btn-default addlist card">add card</button>
+      <button class="btn btn-default addlist card">Add a card...</button>
     </footer>
   `;
 const cardTemplate = `
@@ -112,7 +112,7 @@ let memberInModalElm;
 
 let memberchecked = [];
 let memberunchecked = [];
-let temp = [];
+// let temp = [];
 let newmembers = [];
 let newermembers = [];
 
@@ -795,7 +795,7 @@ function close() {
   memberchecked = [];
   memberunchecked = [];
 
-  temp = [];
+  // temp = [];
   let Elm = event.target;
 
   let li = Elm.closest('li');
@@ -803,25 +803,9 @@ function close() {
   modalElm.setAttribute('class', "modal fade");
   modalElm.style.display = 'none';
   const listOfMembers = modalElm.querySelector('.listofmembers');
-  // console.info(modalMemberInput);
 
 
-  // modalMemberInput.checked = false;
-  // let checkMembers = Elm.querySelectorAll('.form-check-input');
-  // console.info(modalMemberInput);
-  /*  let checkedMembers = document.querySelectorAll('.form-check-input');
-   checkedMembers.forEach((m) => {
-   console.info(m.checked);
-   m.setAttribute('checked','none');
-   });*/
-  // console.info(checkedMembers.getAttribute('checked'));
-  // checkedMembers.checked = false;
-  // modalElm.querySelectorAll('.form-check-input').forEach((m) => {
-// console.info(m);
-//     console.info(m.checked);
-// m.checked = false;
-//     console.info(m.checked);
-//   });
+
 
 
   listOfMembers.innerHTML = '';
@@ -898,7 +882,6 @@ function deleteMember(event) {
 function toggleBtns() {
   let editBtnMember = event.target;
   let allBtnsofLi = editBtnMember.closest('li').querySelectorAll('.btn');
-  // console.info(allBtnsofLi);
   allBtnsofLi.forEach((btn) => {
 
     btn.classList.toggle('hiddenMy');
