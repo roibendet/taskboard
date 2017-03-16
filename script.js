@@ -588,7 +588,6 @@ function addCardEvents(target) {
 
 }
 function addListEvents(target) {
-  // console.log('addList', counter++);
   const targetP = target || document;
 
   // Find the header of a list
