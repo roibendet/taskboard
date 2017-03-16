@@ -1,7 +1,7 @@
 const listTemplate = `
     <header class="panel panel-default input-group">
       <p class="p-header panel-heading header-list"></p>
-      <input maxlength="15" type="text" class="panel-heading hiddenMy input-heading">
+      <input maxlength="25" type="text" class="panel-heading hiddenMy input-heading">
       <div class="input-group-btn">
         <button type="button"  class="btn btn-default editbtn dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true"
@@ -69,7 +69,7 @@ const member = `<h1 class="membertitle">
     
     
     <li class="list-group-item member addmember input-group">
-      <input type="text" id="addmemberinput" class="form-control" placeholder="Add new member">
+      <input type="text" maxlength="25" id="addmemberinput" class="form-control" placeholder="Add new member">
       <span class="input-group-btn">
         <button class="btn btn-primary addmemberbtn" type="button">Add</button>
       </span>
@@ -79,7 +79,7 @@ const member = `<h1 class="membertitle">
 
 const memberBtns = `
   <span></span>
-  <input maxlength="15" type="text" class="membernameinput p-header panel-heading hiddenMy">
+  <input maxlength="25" type="text" class="membernameinput p-header panel-heading hiddenMy">
   <div class="pull-right membernameinputbtns">
   <button class="btn btn-info editmember">Edit</button>
   <button  class="btn btn-danger deletemember">Delete</button>
@@ -826,6 +826,7 @@ function addMember(data) {
   const listMember = document.querySelector('.list-group');
   const addMemberItem = document.querySelector('.addmember');
   const addMemberinputElm = document.getElementById('addmemberinput');
+
   const member = document.createElement('li');
   member.className = 'list-group-item member';
   // member.textContent = addMemberinputElm.value;

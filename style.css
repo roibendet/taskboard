@@ -38,6 +38,7 @@ body {
 .logo {
   background-image: url('assets/taskboard logo.svg');
   background-size: cover;
+
   height: 50px;
   width: 50px;
   margin-left: 1%;
