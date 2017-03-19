@@ -88,10 +88,10 @@ const memberBtns = `
   </div>
   `
 
-const memberInModal = `<input class="form-check-input pull-left" type="checkbox" value="">`;
+const memberInModal = `<input class="form-check-input pull-left inputMy" type="checkbox" value="">`;
 
 
-const addListBtnElm = `<button id="btnClm" class="btn btn-default addlist" type="button">Add a list</button>`
+const addListBtnElm = `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`
 const appData = {
   lists: [],
   members: []
@@ -402,10 +402,10 @@ function addCard(targetUl, data) {
   newCard.appendChild(newCardSpan);
   newCard.setAttribute('class', 'liCard list-group-item');
   const editCardBtn = document.createElement('button');
-  editCardBtn.setAttribute('class', 'editCard btn btn btn-primary btn-xs');
+  editCardBtn.setAttribute('class', 'editCard btn btn btn-info btn-xs');
   editCardBtn.setAttribute('data-toggle', 'modal');
   editCardBtn.setAttribute('data-target', 'myModal');
-  editCardBtn.innerHTML = 'Edit List';
+  editCardBtn.innerHTML = 'Edit Card';
   newCard.innerHTML = "<span>i'm new</span>";
 
   targetUl.appendChild(newCard);
