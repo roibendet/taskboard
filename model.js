@@ -19,6 +19,7 @@ function isAllDataReady() {
   }
 }
 function addList2appDataWithID(emptyList) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
   let newID = uuid();
 
   let newList = {
@@ -30,7 +31,8 @@ function addList2appDataWithID(emptyList) {
   emptyList.setAttribute("uniqueID", newList.id);
 
   appData.lists.push(newList);
-  saveToStorage();
+  localStorage.setItem('appData' ,JSON.stringify(appData));
+  // saveToStorage();
 }
 function addCard2appDataWithID(listID, CardID) {
   let newCard = {
