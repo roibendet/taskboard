@@ -177,139 +177,54 @@ function getMemberData() {
 // ---------------------------------End of JSON------------------------------------------
 
 
-/**
- *
- * @appData Management
- */
-function isAllDataReady() {
-  // console.info('isAllDataReady', counter++);
-  if (allJSONS[0] && allJSONS[1]) {
-    pageByURL();
-  }
+`getLists`, `getMembers`, `getListById`, `getMemberById`, `getTaskById`, `getListTasks`
+
+function getLists() {
+  return appData.lists;
+
 }
-function addList2appDataWithID(emptyList) {
-  let newID = uuid();
 
-  let newList = {
-    id: `${newID}`,
-    tasks: [],
-    title: `list Name ${addListCounter++}`
-  };
-
-  emptyList.setAttribute("uniqueID", newList.id);
-  appData.lists.push(newList);
+function getMembers() {
+  return appData.members;
 }
-function addCard2appDataWithID(listID, CardID) {
 
-  appData.lists.forEach((item) => {
-    if (item.id === listID) {
+function getListById(listId) {
+  const lists = getLists();
+  let currentList = {};
+  lists.forEach((list) => {
+    if (list.id === listId) {
+      currentList = list;
+    }
+  });
+  return currentList;
+}
 
-      const newCard = {
-        id: `${CardID}`,
-        members: [],
-        text: "i'm new"
-      };
-
-      item.tasks.push(newCard);
-
-
+function getMemberByID(memberId) {
+  const members = getMembers();
+  members.forEach((member) => {
+    if (member.id === memberId) {
+      return member;
     }
   });
 }
-function editedTitleName2appData(currentListID, NameAfter) {
 
-  appData.lists.forEach((item) => {
-    if (item.id === currentListID) {
-      item.title = NameAfter;
-    }
+function getTaskById(taskId) {
+  let taskText = {};
+  const lists = getLists();
+  lists.forEach((list) => {
+    list.tasks.forEach((task) => {
+      if (task.id === taskId) {
 
-
+        taskText = task;
+      }
+    })
   });
-
+  return taskText;
 }
-function removeList2appData(currentListID) {
-  appData.lists.forEach((item, index) => {
-    if (item.id === currentListID) {
-      appData.lists.splice(index, 1);
-    }
-  });
 
-}
-function deleteMemberappData(memberName) {
-  appData.members.forEach((member) => {
-    if (member.name === memberName) {
-      let index = appData.members.indexOf(member);
-      appData.members.splice(index, 1)
-    }
-  });
-}
-function addMember2appData(newMemberName, member) {
-  let newID = uuid();
-  const memberobj = {
-    name: '',
-    id: `${newID}`
-  };
-  memberobj.name = newMemberName;
-  member.setAttribute('uniqueID', newID);
-
-
-  appData.members.push(memberobj);
-
-}
-function saveMemberName(currentMemberID, memberNewName) {
-  appData.members.forEach((member) => {
-    if (currentMemberID === member.id) {
-      member.name = memberNewName;
-    }
-
-  })
-}
-function saveText2appData(cardID, listID, newText) {
-
-  appData.lists.forEach((list) => {
-    if (list.id === listID) {
-      list.tasks.forEach((task) => {
-        if (task.id === cardID) {
-          task.text = newText
-        }
-      })
-    }
-  })
-}
-function checkedMemberInModal2appData(currentListID, currentCardID, memberChecked) {
-
-  appData.lists.forEach((list) => {
-    if (list.id === currentListID) {
-      list.tasks.forEach((task) => {
-        if (task.id === currentCardID) {
-          task.members = {};
-          task.members = memberChecked;
-        }
-      })
-    }
-  });
-}
-function deleteCardFromappData(currentListID, currentCardID) {
-  appData.lists.forEach((list) => {
-    if (list.id === currentListID) {
-      list.tasks.forEach((task, i) => {
-        if (task.id === currentCardID) {
-          list.tasks.splice(i, 1);
-        }
-      })
-    }
-  });
-}
-function moveCardToOtherList2appData(indexOfCurrentList, indexOfCurrentCard, indexOfSelectedList, currentCardID) {
-
-
-  appData.lists[indexOfCurrentList].tasks.forEach((task, index) => {
-    if (task.id === currentCardID) {
-      indexOfCurrentCard = index;
-      appData.lists[indexOfSelectedList].tasks.push(appData.lists[indexOfCurrentList].tasks[indexOfCurrentCard]);
-      appData.lists[indexOfCurrentList].tasks.splice(indexOfCurrentCard, 1);
-    }
-  });
+function getListTasksByID(listID) {
+  const list = getListById(listID);
+  return list.tasks;
 }
 
 
@@ -323,7 +238,8 @@ addListEvents();
 
 function ID2Name(data) {
   data.forEach((memberIndata) => {
-    appData.members.forEach((member) => {
+    const members = getMembers();
+    members.forEach((member) => {
       if (memberIndata === member.id) {
         return newmembers.push(member.name);
       }
@@ -353,7 +269,8 @@ function addList(data) {
     titleHead.innerHTML = data.title;
 
     // For each task, create card
-    const tasks = data.tasks;
+    let tasks = getListTasksByID(data.id);
+
     for (const task of tasks) {
       addCard(emptyList, task);
 
@@ -394,7 +311,7 @@ function addCard(targetUl, data) {
   newCard.appendChild(newCardSpan);
   newCard.setAttribute('class', 'liCard list-group-item');
   const editCardBtn = document.createElement('button');
-  editCardBtn.setAttribute('class', 'editCard btn btn btn-info btn-xs');
+  editCardBtn.setAttribute('class', 'editCard btn btn-info btn-xs');
   editCardBtn.setAttribute('data-toggle', 'modal');
   editCardBtn.setAttribute('data-target', 'myModal');
   editCardBtn.innerHTML = 'Edit Card';
@@ -660,7 +577,8 @@ function save() {
 // Find the index of current list
   let indexOfCurrentList = -1;
   let indexOfCurrentCard = -1;
-  appData.lists.forEach((list, index) => {
+  const lists = getLists();
+  lists.forEach((list, index) => {
     if (list.id === currentListID) {
       indexOfCurrentList = index;
     }
@@ -705,39 +623,28 @@ function editCardDisplay(ev) {
   }
 }
 function modal(currentCardID, currentListID) {
-  let currentList = {};
-  let iList = -1;
-  appData.lists.forEach((list, index) => {
-    if (list.id === currentListID) {
-      currentList = list;
-      iList = index;
-    }
-  });
-  let currentCard = {};
-  let i = -1;
-  const allLists = document.querySelectorAll('.list-column');
-  const allCardsInList = allLists[iList].querySelectorAll('.liCard');
+
+  // All Lists
+  const lists = getLists();
 
   // current Card Finder
-  currentList.tasks.forEach((card, index) => {
-    if (card.id === currentCardID) {
-      currentCard = card;
-      i = index;
-    }
 
-  });
 
-  // insert data to text area from appdata
-  const currentCardUI = allCardsInList[i];
-  let textformodal = currentCardUI.querySelector('textarea');
-  textformodal.value = currentCard.text;
+  // insert data to text area from appData
+
+  const currentCardUI = document.querySelector(`[uniqueID = "${currentCardID}"]`);
+  let textForModal = currentCardUI.querySelector('textarea');
+
+
+  textForModal.value = getTaskById(currentCardID).text;
   const movetoselectPElm = currentCardUI.querySelector('.movetoselect');
 
 
   // Creating Move To section from current list to other list
 
+  // const lists = getLists();
 
-  appData.lists.forEach((list) => {
+  lists.forEach((list) => {
     const listOption = document.createElement('option');
     listOption.setAttribute('uniqueID', list.id);
     listOption.textContent = list.title;
@@ -753,8 +660,10 @@ function modal(currentCardID, currentListID) {
 // items for member part of the modal
   const listOfMembers = currentCardUI.querySelector('.listofmembers');
   let checkedMembers = [];
+  const members = getMembers();
+
 // Creating members in modal
-  appData.members.forEach((member) => {
+  members.forEach((member) => {
     memberInModalElm = document.createElement('label');
     memberInModalElm.setAttribute('class', 'form-check-label');
     memberInModalElm.innerHTML += member.name + memberInModal;
@@ -763,13 +672,18 @@ function modal(currentCardID, currentListID) {
     modalMemberInput.setAttribute('uniqueID', member.id);
 
     // Finding and converting Members ID to name
-    appData.lists.forEach((list) => {
-      list.tasks.forEach((task) => {
-        if (task.id === currentCardID) {
-          checkedMembers = task.members;
-        }
-      })
-    });
+    // lists.forEach((list) => {
+    //   list.tasks.forEach((task) => {
+    //     if (task.id === currentCardID) {
+    //       checkedMembers = task.members;
+    //     }
+    //   })
+    // });
+
+    // if (getTaskById(currentCardID)) {
+      checkedMembers = getTaskById(currentCardID).members;
+
+    // }
     ID2Name(checkedMembers);
     newmembers.forEach((member) => {
       if (memberInModalElm.textContent === member) {
@@ -793,9 +707,6 @@ function close() {
   modalElm.setAttribute('class', "modal fade");
   modalElm.style.display = 'none';
   const listOfMembers = modalElm.querySelector('.listofmembers');
-
-
-
 
 
   listOfMembers.innerHTML = '';
@@ -870,10 +781,12 @@ function deleteMember(event) {
   currentMember.remove();
 }
 function toggleBtns() {
+
   let editBtnMember = event.target;
   let allBtnsofLi = editBtnMember.closest('li').querySelectorAll('.btn');
+  // console.info(allBtnsofLi);
   allBtnsofLi.forEach((btn) => {
-
+    console.info(btn);
     btn.classList.toggle('hiddenMy');
 
     // const currentOn = btn.querySelector('.')
@@ -881,7 +794,7 @@ function toggleBtns() {
   });
 }
 function editMember(event) {
-  toggleBtns(event);
+
   const target = event.target;
   const targetP = target.closest('.membernameinputbtns');
 
@@ -894,8 +807,11 @@ function editMember(event) {
   targetInput.focus();
 
   targetInput.value = targetFather.querySelector('span').textContent;
+  const Btns = targetP.querySelectorAll('button');
 
   targetFather.querySelector('span').style.display = 'none';
+  toggleBtns(event);
+
 
   targetP.style.display = 'block';
   const saveBtn = targetFather.querySelector('.savemember');
@@ -906,17 +822,34 @@ function editMember(event) {
     targetInput.style.display = 'none';
     targetFather.querySelector('span').style.display = 'inline-block';
     let newMemberName = targetFather.querySelector('span').textContent;
-    toggleBtns(event);
+    // toggleBtns(event);
+
+
+    Btns[0].classList.remove('hiddenMy');
+    Btns[1].classList.remove('hiddenMy');
+    Btns[2].classList.add('hiddenMy');
+    Btns[3].classList.add('hiddenMy');
     saveMemberName(currentMemberID, newMemberName);
   });
   const cancelBtn = targetFather.querySelector('.cancelmember');
   cancelBtn.addEventListener('click', () => {
+
+    // targetP.classList.toggle('hiddenMy');
     targetP.style.display = '';
+    Btns[0].classList.remove('hiddenMy');
+    Btns[1].classList.remove('hiddenMy');
+    Btns[2].classList.add('hiddenMy');
+    Btns[3].classList.add('hiddenMy');
+
 
     targetInput.style.display = 'none';
+    // targetP.removeAttribute('style.display');
+    targetFather.querySelector('span').style.display = 'initial';
 
-    targetFather.querySelector('span').style.display = 'inline-block';
-    toggleBtns(event);
+    // console.info(targetP);
+
+
+    // toggleBtns(event);
 
   });
 }
@@ -979,17 +912,18 @@ function pageByURL() {
 
 }
 function listView() {
+  const lists = getLists();
+
   // console.log('listView', counter++);
 
   container.innerHTML = addListBtnElm;
   const addListBtn = document.getElementById('btnClm');
-//  addListBtn.addEventListener('click', () => addList());
-  // getBoardData();
-  // const addListBtn = document.getElementById('btnClm');
+
   addListBtn.addEventListener('click', () => addList());
-  for (const result of appData.lists) {
-    addList(result);
-  }
+
+  lists.forEach((list) => {
+    addList(list);
+  });
 
 
 }
@@ -1007,10 +941,14 @@ function memberView() {
       }
     }
   );
+  const members = getMembers();
 
-  for (const result of appData.members) {
-    addMember(result);
-  }
+  members.forEach((member) => {
+    addMember(member);
+  });
+  // for (const result of members) {
+  //
+  // }
 
   // const deleteBtns = document.querySelectorAll('.deletemember');
 
