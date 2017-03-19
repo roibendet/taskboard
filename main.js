@@ -92,10 +92,7 @@ const memberInModal = `<input class="form-check-input pull-left inputMy" type="c
 
 
 const addListBtnElm = `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`
-const appData = {
-  lists: [],
-  members: []
-};
+
 let counter = 1;
 const container = document.getElementById('container');
 const ENTER = 13;
@@ -127,8 +124,12 @@ function appDataBoard(data) {
   const localDataList = dataList.responseText;
   const results = JSON.parse(localDataList);
 
+
   appData.lists = results.board;
 
+  let cacheData = localStorage.setItem('appData', JSON.stringify(appData));
+
+  // console.info(localStorage);
   allJSONS.push(True);
   isAllDataReady();
 
@@ -155,6 +156,8 @@ function appDataMember(data) {
   const localDataList = membersList.responseText;
   const results = JSON.parse(localDataList);
   appData.members = results.members;
+  let cacheData = localStorage.setItem('appData', JSON.stringify(appData));
+
 
   allJSONS.push(True);
 
@@ -179,13 +182,20 @@ function getMemberData() {
 
 `getLists`, `getMembers`, `getListById`, `getMemberById`, `getTaskById`, `getListTasks`
 
+
+
 function getLists() {
-  return appData.lists;
+  let appData = localStorage.getItem('appData');
+  let lists = JSON.parse(appData).lists;
+  return lists;
 
 }
 
 function getMembers() {
-  return appData.members;
+  let appData = localStorage.getItem('appData');
+  let members = JSON.parse(appData).members;
+
+  return members;
 }
 
 function getListById(listId) {
@@ -672,16 +682,7 @@ function modal(currentCardID, currentListID) {
     modalMemberInput.setAttribute('uniqueID', member.id);
 
     // Finding and converting Members ID to name
-    // lists.forEach((list) => {
-    //   list.tasks.forEach((task) => {
-    //     if (task.id === currentCardID) {
-    //       checkedMembers = task.members;
-    //     }
-    //   })
-    // });
-
-    // if (getTaskById(currentCardID)) {
-      checkedMembers = getTaskById(currentCardID).members;
+    checkedMembers = getTaskById(currentCardID).members;
 
     // }
     ID2Name(checkedMembers);
@@ -957,12 +958,24 @@ function memberView() {
 function multiJSON() {
   // console.info('multiJSON', counter++);
   window.addEventListener('hashchange', () => pageByURL());
-  getBoardData();
-  getMemberData();
+
+  if (localStorage.getItem('appData')) {
+
+    pageByURL();
+
+  }
+  else {
+    getBoardData();
+    getMemberData();
+  }
+
 
 }
 multiJSON();
 
+function saveToStorage() {
+  localStorage.setItem('appData', JSON.stringify(appData));
+}
 
 
 

@@ -3,7 +3,10 @@
  */
 
 
-
+let appData = {
+  lists: [],
+  members: []
+};
 /**
  *
  * @appData Management
@@ -25,26 +28,31 @@ function addList2appDataWithID(emptyList) {
   };
 
   emptyList.setAttribute("uniqueID", newList.id);
+
   appData.lists.push(newList);
+  saveToStorage();
 }
 function addCard2appDataWithID(listID, CardID) {
+  let newCard = {
+    id: `${CardID}`,
+    members: [],
+    text: "i'm new"
+  };
 
-  appData.lists.forEach((item) => {
-    if (item.id === listID) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+  let lists = appData.lists;
 
-      const newCard = {
-        id: `${CardID}`,
-        members: [],
-        text: "i'm new"
-      };
-
-      item.tasks.push(newCard);
-
-
+  lists.forEach((list) => {
+    if (list.id === listID) {
+      list.tasks.push(newCard);
     }
+
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
 }
 function editedTitleName2appData(currentListID, NameAfter) {
+
+  let appData = JSON.parse(localStorage.getItem('appData'));
 
   appData.lists.forEach((item) => {
     if (item.id === currentListID) {
@@ -53,25 +61,37 @@ function editedTitleName2appData(currentListID, NameAfter) {
 
 
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
 
 }
+
+
 function removeList2appData(currentListID) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+
   appData.lists.forEach((item, index) => {
     if (item.id === currentListID) {
       appData.lists.splice(index, 1);
     }
   });
-
+  localStorage.setItem('appData', JSON.stringify(appData));
 }
 function deleteMemberappData(memberName) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+
+
   appData.members.forEach((member) => {
     if (member.name === memberName) {
       let index = appData.members.indexOf(member);
       appData.members.splice(index, 1)
     }
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
 function addMember2appData(newMemberName, member) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+
   let newID = uuid();
   const memberobj = {
     name: '',
@@ -82,17 +102,25 @@ function addMember2appData(newMemberName, member) {
 
 
   appData.members.push(memberobj);
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 
 }
+
 function saveMemberName(currentMemberID, memberNewName) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+
   appData.members.forEach((member) => {
     if (currentMemberID === member.id) {
       member.name = memberNewName;
     }
 
-  })
+  });
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
 function saveText2appData(cardID, listID, newText) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
 
   appData.lists.forEach((list) => {
     if (list.id === listID) {
@@ -103,8 +131,11 @@ function saveText2appData(cardID, listID, newText) {
       })
     }
   })
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
 function checkedMemberInModal2appData(currentListID, currentCardID, memberChecked) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
 
   appData.lists.forEach((list) => {
     if (list.id === currentListID) {
@@ -116,8 +147,12 @@ function checkedMemberInModal2appData(currentListID, currentCardID, memberChecke
       })
     }
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
 function deleteCardFromappData(currentListID, currentCardID) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
+
   appData.lists.forEach((list) => {
     if (list.id === currentListID) {
       list.tasks.forEach((task, i) => {
@@ -127,8 +162,11 @@ function deleteCardFromappData(currentListID, currentCardID) {
       })
     }
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
 function moveCardToOtherList2appData(indexOfCurrentList, indexOfCurrentCard, indexOfSelectedList, currentCardID) {
+  let appData = JSON.parse(localStorage.getItem('appData'));
 
 
   appData.lists[indexOfCurrentList].tasks.forEach((task, index) => {
@@ -138,4 +176,6 @@ function moveCardToOtherList2appData(indexOfCurrentList, indexOfCurrentCard, ind
       appData.lists[indexOfCurrentList].tasks.splice(indexOfCurrentCard, 1);
     }
   });
+  localStorage.setItem('appData', JSON.stringify(appData));
+
 }
