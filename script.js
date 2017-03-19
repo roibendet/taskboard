@@ -121,7 +121,7 @@ let newermembers = [];
 
 // board JSON
 function appDataBoard(data) {
-  console.log('appDataBoard', counter++);
+  // console.log('appDataBoard', counter++);
   const dataList = data.currentTarget;
 
   const localDataList = dataList.responseText;
@@ -130,13 +130,12 @@ function appDataBoard(data) {
   appData.lists = results.board;
 
   allJSONS.push(True);
-  // console.info('appDataBoard', 'Done');
   isAllDataReady();
 
 
 }
 function getBoardData() {
-  console.log('getBoardData', counter++);
+  // console.log('getBoardData', counter++);
 
 
   const dataList = new XMLHttpRequest();
@@ -150,7 +149,7 @@ function getBoardData() {
 }
 // Members JSON
 function appDataMember(data) {
-  console.log('appDataMember', counter++);
+  // console.log('appDataMember', counter++);
 
   const membersList = data.currentTarget;
   const localDataList = membersList.responseText;
@@ -159,14 +158,13 @@ function appDataMember(data) {
 
   allJSONS.push(True);
 
-  // console.log('appDataMember', 'Done');
   isAllDataReady();
 
 }
 // Members JSON loader
 function getMemberData() {
 
-  console.log('getMemberData', counter++);
+  // console.log('getMemberData', counter++);
 
   const membersList = new XMLHttpRequest();
   membersList.addEventListener("load", appDataMember);
@@ -184,7 +182,7 @@ function getMemberData() {
  * @appData Management
  */
 function isAllDataReady() {
-  console.info('isAllDataReady', counter++);
+  // console.info('isAllDataReady', counter++);
   if (allJSONS[0] && allJSONS[1]) {
     pageByURL();
   }
@@ -200,7 +198,6 @@ function addList2appDataWithID(emptyList) {
 
   emptyList.setAttribute("uniqueID", newList.id);
   appData.lists.push(newList);
-  console.info('after', newList.id);
 }
 function addCard2appDataWithID(listID, CardID) {
 
@@ -214,7 +211,6 @@ function addCard2appDataWithID(listID, CardID) {
       };
 
       item.tasks.push(newCard);
-      console.info(newCard.id);
 
 
     }
@@ -241,7 +237,6 @@ function removeList2appData(currentListID) {
 }
 function deleteMemberappData(memberName) {
   appData.members.forEach((member) => {
-    console.info(member.name);
     if (member.name === memberName) {
       let index = appData.members.indexOf(member);
       appData.members.splice(index, 1)
@@ -262,12 +257,9 @@ function addMember2appData(newMemberName, member) {
 
 }
 function saveMemberName(currentMemberID, memberNewName) {
-// console.info(currentMemberID);
-// console.info(appData.members);
   appData.members.forEach((member) => {
     if (currentMemberID === member.id) {
       member.name = memberNewName;
-      // console.info('got it' , member.name);
     }
 
   })
@@ -507,7 +499,6 @@ function editName() {
   function eventhandeler(event) {
 
     let currentListID = event.target.closest('.list-column').getAttribute('uniqueID');
-    // console.info(currentListID);
     currentElm.focus();
 
 
@@ -553,7 +544,6 @@ function removeList() {
 
   const currentBtn = event.target;
   const currentUl = event.target.closest('ul');
-  //console.log(localDataList);
   if (event.type === evtClick) {
 
     // Catch the header
@@ -820,7 +810,7 @@ function close() {
  * @Members Page
  */
 function addMember(data) {
-  console.info('add Member', counter++);
+  // console.info('add Member', counter++);
 
   // Creating Member
   const listMember = document.querySelector('.list-group');
@@ -869,7 +859,6 @@ function addMember(data) {
 }
 function deleteMember(event) {
   let deleteBtnMember = event.target;
-  console.info(deleteBtnMember);
   let currentMember = deleteBtnMember.closest('li');
   const memberName = currentMember.querySelector('span').textContent;
 
@@ -894,7 +883,6 @@ function toggleBtns() {
 function editMember(event) {
   toggleBtns(event);
   const target = event.target;
-  console.info(target);
   const targetP = target.closest('.membernameinputbtns');
 
   const targetFather = targetP.parentNode;
@@ -940,7 +928,6 @@ function editMember(event) {
  */
 function currentPage(data) {
   const topNav = document.querySelector('.nav-top');
-// console.log('currentPage', counter++);
 
   const currentStr = data.slice(1);
 
@@ -958,7 +945,7 @@ function currentPage(data) {
 }
 function pageByURL() {
   // window.addEventListener('hashchange', () => pageByURL());
-  console.log('pageByURL', counter++);
+  // console.log('pageByURL', counter++);
   const currentHash = window.location.hash;
 
 
@@ -972,7 +959,6 @@ function pageByURL() {
   if (currentHash === '#board') {
 
 
-    // console.info('board');
     listView();
     container.classList.remove('memberview');
     // getBoardData();
@@ -993,7 +979,7 @@ function pageByURL() {
 
 }
 function listView() {
-  console.log('listView', counter++);
+  // console.log('listView', counter++);
 
   container.innerHTML = addListBtnElm;
   const addListBtn = document.getElementById('btnClm');
@@ -1002,14 +988,13 @@ function listView() {
   // const addListBtn = document.getElementById('btnClm');
   addListBtn.addEventListener('click', () => addList());
   for (const result of appData.lists) {
-    // console.info(result);
     addList(result);
   }
 
 
 }
 function memberView() {
-  console.log('memberView', counter++);
+  // console.log('memberView', counter++);
   container.innerHTML = member;
   const addMemberinputElm = document.getElementById('addmemberinput');
   const addMemberBtn = document.querySelector('.addmemberbtn');
@@ -1032,7 +1017,7 @@ function memberView() {
 
 }
 function multiJSON() {
-  console.info('multiJSON', counter++);
+  // console.info('multiJSON', counter++);
   window.addEventListener('hashchange', () => pageByURL());
   getBoardData();
   getMemberData();
