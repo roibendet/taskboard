@@ -183,22 +183,19 @@ padding-left: 3%;
 }
 
 .list > li {
-  /*background-color: #8c8c8c;*/
-  /*outline: 1px blue solid;*/
+
   height: 110%;
   min-height: 100px;
   text-align: center;
   width: 80%;
   margin: 0 auto;
   margin-top: 20px;
-  /*overflow: hidden;*/
 
 }
 
 .dropdown-menu {
   left: inherit;
   right: 0;
-  /*display: block;*/
 }
 .show {
   display: block;
@@ -210,7 +207,6 @@ padding-left: 3%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  /*align-items: flex-start;*/
   border-radius: 4px;
   padding:10px;
   padding-bottom: 30px;
@@ -220,28 +216,29 @@ padding-left: 3%;
 }
 
 
-
-
-
-
 .bottomMy {
-  /*outline: 1px red solid;*/
-  /*display: flex;*/
-  /*justify-items: flex-end;*/
-  /*align-self: flex-end;*/
-  /*justify-content: flex-end;*/
+
   position: absolute;
   bottom: 10px;
   right: 10px;
 
 }
-/*.input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group {*/
-  /*margin-left: -40px;*/
-/*}*/
+
+
+
+
+
+.input-group > .input-group-btn > .editbtn {
+  margin-left: -40px;
+}
+
+
+
 
 .liCard:hover .editCard {
   display: inline-block;
 }
+
 
 .editCard,
 .editCard:link,
@@ -251,11 +248,7 @@ padding-left: 3%;
   position: absolute;
   right: 5px;
   top: 5px;
-  /*font-size: 1.5rem;*/
-  /*outline: 1px solid blue;*/
-  /*width: 12%;*/
-  /*color: white;*/
-  /*background-color: #5bc0de;*/
+
 }
 
 .editCard {

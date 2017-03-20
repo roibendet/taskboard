@@ -127,9 +127,7 @@ function appDataBoard(data) {
 
   appData.lists = results.board;
 
-  let cacheData = localStorage.setItem('appData', JSON.stringify(appData));
 
-  // console.info(localStorage);
   allJSONS.push(True);
   isAllDataReady();
 
@@ -137,13 +135,10 @@ function appDataBoard(data) {
 }
 function getBoardData() {
   // console.log('getBoardData', counter++);
-
-
   const dataList = new XMLHttpRequest();
 
   dataList.addEventListener("load", appDataBoard);
   dataList.open("GET", "assets/board-advanced.json");
-  // dataList.open("GET", "assets/board.json");
   dataList.send();
 
 
@@ -156,7 +151,7 @@ function appDataMember(data) {
   const localDataList = membersList.responseText;
   const results = JSON.parse(localDataList);
   appData.members = results.members;
-  let cacheData = localStorage.setItem('appData', JSON.stringify(appData));
+  // let cacheData = localStorage.setItem('appData', JSON.stringify(appData));
 
 
   allJSONS.push(True);
@@ -180,22 +175,19 @@ function getMemberData() {
 // ---------------------------------End of JSON------------------------------------------
 
 
-`getLists`, `getMembers`, `getListById`, `getMemberById`, `getTaskById`, `getListTasks`
+
 
 
 
 function getLists() {
-  let appData = localStorage.getItem('appData');
-  let lists = JSON.parse(appData).lists;
-  return lists;
-
+  return appData.lists;
 }
 
 function getMembers() {
-  let appData = localStorage.getItem('appData');
-  let members = JSON.parse(appData).members;
+  // let appData = localStorage.getItem('appData');
+  // let members = JSON.parse(appData).members;
 
-  return members;
+  return appData.members;
 }
 
 function getListById(listId) {
@@ -878,7 +870,6 @@ function currentPage(data) {
 
 }
 function pageByURL() {
-  // window.addEventListener('hashchange', () => pageByURL());
   // console.log('pageByURL', counter++);
   const currentHash = window.location.hash;
 
@@ -895,7 +886,6 @@ function pageByURL() {
 
     listView();
     container.classList.remove('memberview');
-    // getBoardData();
     currentPage(currentHash);
 
   }
@@ -903,18 +893,12 @@ function pageByURL() {
     window.location.hash = '#board';
 
   }
-  /*  if (!currentHash) {
-   window.location.hash = '#board'
-   }*/
-  /* else {
-   window.location.hash = '#board'
-   }*/
+
 
 
 }
 function listView() {
   const lists = getLists();
-
   // console.log('listView', counter++);
 
   container.innerHTML = addListBtnElm;
@@ -960,7 +944,7 @@ function multiJSON() {
   window.addEventListener('hashchange', () => pageByURL());
 
   if (localStorage.getItem('appData')) {
-
+appData = JSON.parse(localStorage.getItem('appData'));
     pageByURL();
 
   }
@@ -974,7 +958,7 @@ function multiJSON() {
 multiJSON();
 
 function saveToStorage() {
-  localStorage.setItem('appData', JSON.stringify(appData));
+return  localStorage.setItem('appData', JSON.stringify(appData));
 }
 
 

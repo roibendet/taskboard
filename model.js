@@ -15,12 +15,15 @@ let appData = {
 function isAllDataReady() {
   // console.info('isAllDataReady', counter++);
   if (allJSONS[0] && allJSONS[1]) {
+    localStorage.setItem('appData', JSON.stringify(appData));
     pageByURL();
   }
 }
 function addList2appDataWithID(emptyList) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
+  let lists = getLists();
+
   let newID = uuid();
+
 
   let newList = {
     id: `${newID}`,
@@ -30,9 +33,8 @@ function addList2appDataWithID(emptyList) {
 
   emptyList.setAttribute("uniqueID", newList.id);
 
-  appData.lists.push(newList);
-  localStorage.setItem('appData' ,JSON.stringify(appData));
-  // saveToStorage();
+  lists.push(newList);
+  saveToStorage();
 }
 function addCard2appDataWithID(listID, CardID) {
   let newCard = {
@@ -41,8 +43,7 @@ function addCard2appDataWithID(listID, CardID) {
     text: "i'm new"
   };
 
-  let appData = JSON.parse(localStorage.getItem('appData'));
-  let lists = appData.lists;
+  let lists = getLists();
 
   lists.forEach((list) => {
     if (list.id === listID) {
@@ -50,50 +51,54 @@ function addCard2appDataWithID(listID, CardID) {
     }
 
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 }
 function editedTitleName2appData(currentListID, NameAfter) {
 
-  let appData = JSON.parse(localStorage.getItem('appData'));
+  let lists = getLists();
 
-  appData.lists.forEach((item) => {
+
+
+  lists.forEach((item) => {
     if (item.id === currentListID) {
       item.title = NameAfter;
     }
 
 
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 
 
 function removeList2appData(currentListID) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
+  let lists = getLists();
 
-  appData.lists.forEach((item, index) => {
+  lists.forEach((item, index) => {
     if (item.id === currentListID) {
       appData.lists.splice(index, 1);
     }
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 }
 function deleteMemberappData(memberName) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
+let members = getMembers();
 
-
-  appData.members.forEach((member) => {
+  members.forEach((member) => {
     if (member.name === memberName) {
-      let index = appData.members.indexOf(member);
-      appData.members.splice(index, 1)
+      let index = members.indexOf(member);
+      members.splice(index, 1)
     }
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 function addMember2appData(newMemberName, member) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
-
+let members = getMembers();
   let newID = uuid();
   const memberobj = {
     name: '',
@@ -103,28 +108,28 @@ function addMember2appData(newMemberName, member) {
   member.setAttribute('uniqueID', newID);
 
 
-  appData.members.push(memberobj);
-  localStorage.setItem('appData', JSON.stringify(appData));
+  members.push(memberobj);
+  saveToStorage();
+
 
 
 }
 
 function saveMemberName(currentMemberID, memberNewName) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
-
-  appData.members.forEach((member) => {
+let members = getMembers();
+  members.forEach((member) => {
     if (currentMemberID === member.id) {
       member.name = memberNewName;
     }
 
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 function saveText2appData(cardID, listID, newText) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
-
-  appData.lists.forEach((list) => {
+let lists = getLists();
+  lists.forEach((list) => {
     if (list.id === listID) {
       list.tasks.forEach((task) => {
         if (task.id === cardID) {
@@ -132,14 +137,17 @@ function saveText2appData(cardID, listID, newText) {
         }
       })
     }
-  })
-  localStorage.setItem('appData', JSON.stringify(appData));
+  });
+  // localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 function checkedMemberInModal2appData(currentListID, currentCardID, memberChecked) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
+let lists = getLists();
 
-  appData.lists.forEach((list) => {
+
+  lists.forEach((list) => {
     if (list.id === currentListID) {
       list.tasks.forEach((task) => {
         if (task.id === currentCardID) {
@@ -149,13 +157,13 @@ function checkedMemberInModal2appData(currentListID, currentCardID, memberChecke
       })
     }
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 function deleteCardFromappData(currentListID, currentCardID) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
-
-  appData.lists.forEach((list) => {
+let lists = getLists();
+  lists.forEach((list) => {
     if (list.id === currentListID) {
       list.tasks.forEach((task, i) => {
         if (task.id === currentCardID) {
@@ -164,20 +172,21 @@ function deleteCardFromappData(currentListID, currentCardID) {
       })
     }
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
 function moveCardToOtherList2appData(indexOfCurrentList, indexOfCurrentCard, indexOfSelectedList, currentCardID) {
-  let appData = JSON.parse(localStorage.getItem('appData'));
 
-
-  appData.lists[indexOfCurrentList].tasks.forEach((task, index) => {
+let lists = getLists();
+  lists[indexOfCurrentList].tasks.forEach((task, index) => {
     if (task.id === currentCardID) {
       indexOfCurrentCard = index;
-      appData.lists[indexOfSelectedList].tasks.push(appData.lists[indexOfCurrentList].tasks[indexOfCurrentCard]);
-      appData.lists[indexOfCurrentList].tasks.splice(indexOfCurrentCard, 1);
+      lists[indexOfSelectedList].tasks.push(lists[indexOfCurrentList].tasks[indexOfCurrentCard]);
+      lists[indexOfCurrentList].tasks.splice(indexOfCurrentCard, 1);
     }
   });
-  localStorage.setItem('appData', JSON.stringify(appData));
+  saveToStorage();
+
 
 }
