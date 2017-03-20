@@ -1,12 +1,15 @@
+
+
+
 (function () {
-
-
   let counter = 1;
   const container = document.getElementById('container');
   const allJSONS = [];
-  let addListCounter = 1;
   let memberchecked = [];
   let newmembers = [];
+  // let addListCounter = 1;
+
+
 
 
 // board JSON
@@ -95,12 +98,13 @@
       <button class="btn btn-default addlist card">Add a card...</button>
     </footer>
   `;
-    const listName = `list Name ${addListCounter}`;
+
+    let listName = `list Name`;
+
     const addListBtn = document.getElementById('btnClm');
     const emptyList = document.createElement('div');
     emptyList.className = 'list-column list-group';
     emptyList.innerHTML = listTemplate;
-    emptyList.querySelector('.p-header').innerHTML = listName;
     container.insertBefore(emptyList, addListBtn);
     if (data) {
       const titleHead = emptyList.querySelector('.p-header');
@@ -116,6 +120,9 @@
       }
     }
     if (!data) {
+      // listName = `list Name ${MODEL.addListCounter()}`;
+      emptyList.querySelector('.p-header').innerHTML = listName;
+
       MODEL.addList2appDataWithID(emptyList);
     }
     addListEvents(emptyList);
@@ -169,7 +176,7 @@
     const newCardSpan = document.createElement('span');
     newCard.appendChild(newCardSpan);
     newCard.setAttribute('class', 'liCard list-group-item');
-    newCard.setAttribute('draggable', true);
+    // newCard.setAttribute('draggable', true);
     const editCardBtn = document.createElement('button');
     editCardBtn.setAttribute('class', 'editCard btn btn-info btn-xs');
     editCardBtn.setAttribute('data-toggle', 'modal');
@@ -307,10 +314,10 @@
     }
     let dragged;
     let targett;
-    target.addEventListener("dragstart", function (event) {
+
+   /* target.addEventListener("dragstart", function (event) {
       // store a ref. on the dragged elem
       dragged = event.target;
-      // console.info(dragged);
       // make it half transparent
       // event.target.style.opacity = .5;
       console.info('start', dragged);
@@ -349,7 +356,6 @@
     target.closest('div').addEventListener("drop", function (event) {
       // prevent default action (open as link for some elements)
       event.preventDefault();
-      // console.info(event);
       // move dragged elem to the selected drop target
       if (event.target.className == "liCard list-group-item") {
         event.target.style.background = "";
@@ -360,7 +366,7 @@
         // event.target.appendChild(dragged);
       }
 
-    }, false);
+    }, false);*/
   }
   function addListEvents(target) {
     const targetP = target || document;
@@ -728,21 +734,4 @@
   }
   multiJSON();
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

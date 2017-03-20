@@ -11,52 +11,50 @@ const MODEL = (function () {
     members: []
   };
 
+  let counter = 0;
+  /**
+   *
+   * @Public
+   */
 
+
+  /**
+   * First storage from JSON to Local Storage
+   */
   function setAppDataFromLocalStorage(data) {
     appData = data
   }
 
-  function setAppDataObject() {
-    localStorage.setItem('appData', JSON.stringify(appData));
-
+  function firstLoadBoard(data) {
+    appData.lists = data;
   }
-
-
-function firstLoadBoard(data) {
-  appData.lists = data;
-}
-
 
   function firstLoadMembers(data) {
     appData.members = data;
   }
 
-
-
-
-
   function isAllDataReady() {
     // console.info('isAllDataReady', counter++);
     if (allJSONS[0] && allJSONS[1]) {
-      console.info('dddooonnnee');
       return true;
-      // MAIN.pageByURL();
     }
     else {
       return false;
     }
   }
 
+
+  /**
+   * updates appData and LocalStorage
+   */
   function addList2appDataWithID(emptyList) {
+
     let lists = getLists();
-
     let newID = uuid();
-
-
     let newList = {
       id: `${newID}`,
       tasks: [],
-      title: `list Name ${addListCounter++}`
+      title: `list Name`
     };
 
     emptyList.setAttribute("uniqueID", newList.id);
@@ -100,7 +98,6 @@ function firstLoadBoard(data) {
 
 
   }
-
 
   function removeList2appData(currentListID) {
     let lists = getLists();
@@ -229,18 +226,15 @@ function firstLoadBoard(data) {
     return localStorage.setItem('appData', JSON.stringify(appData));
   }
 
-
-
+  /**
+   * Get data From appData Functions
+   */
 
   function getLists() {
-
     return appData.lists;
   }
 
   function getMembers() {
-    // let appData = localStorage.getItem('appData');
-    // let members = JSON.parse(appData).members;
-
     return appData.members;
   }
 
@@ -271,7 +265,9 @@ function firstLoadBoard(data) {
       list.tasks.forEach((task) => {
         if (task.id === taskId) {
           taskText = task;
-        }    })  });
+        }
+      })
+    });
     return taskText;
   }
 
@@ -280,58 +276,57 @@ function firstLoadBoard(data) {
     return list.tasks;
   }
 
+/*  function addListCounter() {
+    if (localStorage.getItem('counter')) {
+      counter = parseInt(localStorage.getItem('counter'));
+      return ++counter;
+    }
+    else {
+      localStorage.setItem('counter', counter++);
+      return ++counter;
+
+    }
 
 
-
-
+  }*/
 
   return {
     /**
      * First storage from JSON to Local Storage
      */
-    firstLoadBoard:firstLoadBoard,
-    firstLoadMembers: firstLoadMembers,
-    setAppDataFromLocalStorage:setAppDataFromLocalStorage,
-    setAppDataObject: setAppDataObject,
-
-
+    firstLoadBoard,
+    firstLoadMembers,
+    setAppDataFromLocalStorage,
 
     /**
      * updates appData and LocalStorage
      */
-    isAllDataReady: isAllDataReady,
-    addList2appDataWithID: addList2appDataWithID,
-    addCard2appDataWithID: addCard2appDataWithID,
-    editedTitleName2appData: editedTitleName2appData,
-    removeList2appData: removeList2appData,
-    deleteMemberappData: deleteMemberappData,
-    addMember2appData: addMember2appData,
-    saveMemberName: saveMemberName,
-    saveText2appData: saveText2appData,
-    checkedMemberInModal2appData: checkedMemberInModal2appData,
-    deleteCardFromappData: deleteCardFromappData,
-    moveCardToOtherList2appData: moveCardToOtherList2appData,
-    saveToStorage:saveToStorage,
-
-
+    isAllDataReady,
+    addList2appDataWithID,
+    addCard2appDataWithID,
+    editedTitleName2appData,
+    removeList2appData,
+    deleteMemberappData,
+    addMember2appData,
+    saveMemberName,
+    saveText2appData,
+    checkedMemberInModal2appData,
+    deleteCardFromappData,
+    moveCardToOtherList2appData,
+    saveToStorage,
 
     /**
      * Get data From appData
      */
-
-    getLists:getLists,
-    getMembers:getMembers,
-    getListById:getListById,
-    getMemberByID:getMemberByID,
-    getTaskById:getTaskById,
-    getListTasksByID:getListTasksByID
-
-
-
+    getLists,
+    getMembers,
+    getListById,
+    getMemberByID,
+    getTaskById,
+    getListTasksByID
 
 
   }
-
 })();
 
 
