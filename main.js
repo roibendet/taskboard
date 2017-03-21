@@ -645,6 +645,11 @@
    *
    * @Operating UI
    */
+
+  /**
+   *
+   * @TopNav active effect handler
+   */
   function currentPage(data) {
     const topNav = document.querySelector('.nav-top');
     const currentStr = data.slice(1);
@@ -676,10 +681,11 @@
   }
 
   function listView() {
-    const addListBtnElm = `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`;
+    const addListBtnElm = {
+      addListBtnElm:  `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`}
     const lists = MODEL.getLists();
     // console.log('listView', counter++);
-    container.innerHTML = addListBtnElm;
+    container.innerHTML = addListBtnElm.addListBtnElm;
     const addListBtn = document.getElementById('btnClm');
     addListBtn.addEventListener('click', () => addList());
     lists.forEach((list) => {
@@ -687,22 +693,19 @@
     });
   }
   function memberView() {
-    const member = `<h1 class="membertitle">
+
+    const member = {
+      member:`<h1 class="membertitle">
     Taskboard Members
-  </h1><ul class="list-group">
-     
-    
-    
-    
-    <li class="list-group-item member addmember input-group">
+  </h1><ul class="list-group"><li class="list-group-item member addmember input-group">
       <input type="text" maxlength="25" id="addmemberinput" class="form-control" placeholder="Add new member">
       <span class="input-group-btn">
         <button class="btn btn-primary addmemberbtn" type="button">Add</button>
       </span>
     </li>
-  </ul>`;
-    // console.log('memberView', counter++);
-    container.innerHTML = member;
+  </ul>`}
+        // console.log('memberView', counter++);
+    container.innerHTML = member.member;
     const addMemberinputElm = document.getElementById('addmemberinput');
     const addMemberBtn = document.querySelector('.addmemberbtn');
     addMemberBtn.addEventListener('click', () => addMember());
@@ -719,8 +722,9 @@
     });
   }
 
-  function multiJSON() {
-    // console.info('multiJSON', counter++);
+
+  function appStarter() {
+    // console.info('appStarter', counter++);
     window.addEventListener('hashchange', () => pageByURL());
     if (localStorage.getItem('appData')) {
       let cacheData = JSON.parse(localStorage.getItem('appData'));
@@ -732,6 +736,6 @@
       getMemberData();
     }
   }
-  multiJSON();
+  appStarter();
 })();
 

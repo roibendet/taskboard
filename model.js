@@ -11,12 +11,10 @@ const MODEL = (function () {
     members: []
   };
 
-  let counter = 0;
-  /**
+    /**
    *
    * @Public
    */
-
 
   /**
    * First storage from JSON to Local Storage
@@ -24,17 +22,13 @@ const MODEL = (function () {
   function setAppDataFromLocalStorage(data) {
     appData = data
   }
-
   function firstLoadBoard(data) {
     appData.lists = data;
   }
-
   function firstLoadMembers(data) {
     appData.members = data;
   }
-
   function isAllDataReady() {
-    // console.info('isAllDataReady', counter++);
     if (allJSONS[0] && allJSONS[1]) {
       return true;
     }
@@ -42,8 +36,6 @@ const MODEL = (function () {
       return false;
     }
   }
-
-
   /**
    * updates appData and LocalStorage
    */
@@ -62,7 +54,6 @@ const MODEL = (function () {
     lists.push(newList);
     saveToStorage();
   }
-
   function addCard2appDataWithID(listID, CardID) {
     let newCard = {
       id: `${CardID}`,
@@ -81,7 +72,6 @@ const MODEL = (function () {
     saveToStorage();
 
   }
-
   function editedTitleName2appData(currentListID, NameAfter) {
 
     let lists = getLists();
@@ -98,7 +88,6 @@ const MODEL = (function () {
 
 
   }
-
   function removeList2appData(currentListID) {
     let lists = getLists();
 
@@ -110,7 +99,6 @@ const MODEL = (function () {
     saveToStorage();
 
   }
-
   function deleteMemberappData(memberName) {
     let members = getMembers();
 
@@ -124,7 +112,6 @@ const MODEL = (function () {
 
 
   }
-
   function addMember2appData(newMemberName, member) {
     let members = getMembers();
     let newID = uuid();
@@ -141,7 +128,6 @@ const MODEL = (function () {
 
 
   }
-
   function saveMemberName(currentMemberID, memberNewName) {
     let members = getMembers();
     members.forEach((member) => {
@@ -154,7 +140,6 @@ const MODEL = (function () {
 
 
   }
-
   function saveText2appData(cardID, listID, newText) {
     let lists = getLists();
     lists.forEach((list) => {
@@ -171,11 +156,8 @@ const MODEL = (function () {
 
 
   }
-
   function checkedMemberInModal2appData(currentListID, currentCardID, memberChecked) {
     let lists = getLists();
-
-
     lists.forEach((list) => {
       if (list.id === currentListID) {
         list.tasks.forEach((task) => {
@@ -188,9 +170,7 @@ const MODEL = (function () {
     });
     saveToStorage();
 
-
   }
-
   function deleteCardFromappData(currentListID, currentCardID) {
     let lists = getLists();
     lists.forEach((list) => {
@@ -206,9 +186,7 @@ const MODEL = (function () {
 
 
   }
-
   function moveCardToOtherList2appData(indexOfCurrentList, indexOfCurrentCard, indexOfSelectedList, currentCardID) {
-
     let lists = getLists();
     lists[indexOfCurrentList].tasks.forEach((task, index) => {
       if (task.id === currentCardID) {
@@ -218,10 +196,7 @@ const MODEL = (function () {
       }
     });
     saveToStorage();
-
-
   }
-
   function saveToStorage() {
     return localStorage.setItem('appData', JSON.stringify(appData));
   }
@@ -233,11 +208,9 @@ const MODEL = (function () {
   function getLists() {
     return appData.lists;
   }
-
   function getMembers() {
     return appData.members;
   }
-
   function getListById(listId) {
     const lists = getLists();
     let currentList = {};
@@ -248,7 +221,6 @@ const MODEL = (function () {
     });
     return currentList;
   }
-
   function getMemberByID(memberId) {
     const members = getMembers();
     members.forEach((member) => {
@@ -257,7 +229,6 @@ const MODEL = (function () {
       }
     });
   }
-
   function getTaskById(taskId) {
     let taskText = {};
     const lists = getLists();
@@ -270,25 +241,10 @@ const MODEL = (function () {
     });
     return taskText;
   }
-
   function getListTasksByID(listID) {
     const list = getListById(listID);
     return list.tasks;
   }
-
-/*  function addListCounter() {
-    if (localStorage.getItem('counter')) {
-      counter = parseInt(localStorage.getItem('counter'));
-      return ++counter;
-    }
-    else {
-      localStorage.setItem('counter', counter++);
-      return ++counter;
-
-    }
-
-
-  }*/
 
   return {
     /**
@@ -324,8 +280,6 @@ const MODEL = (function () {
     getMemberByID,
     getTaskById,
     getListTasksByID
-
-
   }
 })();
 
