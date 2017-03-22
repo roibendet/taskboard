@@ -1,15 +1,17 @@
-
-
-
 (function () {
   let counter = 1;
   const container = document.getElementById('container');
   const allJSONS = [];
   let memberchecked = [];
   let newmembers = [];
+  let fuck = true;
+  let tempcount = true;
   // let addListCounter = 1;
 
-
+  let dragged;
+  let draggedP;
+  let droptarget;
+  let droptargetP;
 
 
 // board JSON
@@ -92,7 +94,8 @@
         </ul>
       </div>
 
-    </header><div>
+    </header>
+    <div class="listP">
       <ul class="list"></ul>
     </div><footer>
       <button class="btn btn-default addlist card">Add a card...</button>
@@ -134,6 +137,7 @@
     const targetUL = currentList.querySelector('.list');
     addCard(targetUL);
   }
+
   function addCard(targetUl, data) {
     const cardTemplate = `<div class="modal-dialog" role="document">
               <div class="modal-content">
@@ -176,7 +180,7 @@
     const newCardSpan = document.createElement('span');
     newCard.appendChild(newCardSpan);
     newCard.setAttribute('class', 'liCard list-group-item');
-    // newCard.setAttribute('draggable', true);
+    newCard.setAttribute('draggable', true);
     const editCardBtn = document.createElement('button');
     editCardBtn.setAttribute('class', 'editCard btn btn-info btn-xs');
     editCardBtn.setAttribute('data-toggle', 'modal');
@@ -312,12 +316,12 @@
     for (const editCard of editCards) {
       editCard.addEventListener("click", editCardDisplay);
     }
-    let dragged;
-    let targett;
 
-   /* target.addEventListener("dragstart", function (event) {
+
+    container.addEventListener("dragstart", function (event) {
       // store a ref. on the dragged elem
       dragged = event.target;
+      draggedP = dragged.closest('.list');
       // make it half transparent
       // event.target.style.opacity = .5;
       console.info('start', dragged);
@@ -326,9 +330,14 @@
     document.addEventListener("dragenter", function (event) {
       // highlight potential drop target when the draggable element enters it
       // console.info(event.target);
-      if (event.target.className == "liCard list-group-item") {
+      if (event.target.className == "liCard list-group-item" || event.target.className == "listP") {
         event.target.style.background = "purple";
-        // console.info('target', event.target);
+        droptarget = event.target.closest('.list');
+        droptargetP = event.target.closest('.listP');
+        tempcount = true;
+
+        console.info('target', droptarget);
+
       }
 
     }, false);
@@ -343,31 +352,68 @@
     }, false);
 
 
-    document.addEventListener("dragend", function (event) {
+    container.addEventListener("dragend", function (event) {
       // reset background of potential drop target when the draggable element leaves it
       // console.info(event.currentTarget);
       if (event.target.className == "liCard list-group-item") {
         event.target.style.background = "";
-        console.info('this is the target', event.target);
+        // console.info('this is the target', event.target);
+        // console.info('works');
+        // dragged.closest('ul').removeChild(dragged);
+        temp();
+        // tempcount = true;
+
       }
+
+      function temp() {
+        // console.info('im here');
+
+        if (tempcount) {
+          // console.info(tempcount);
+          let finaltarget = droptarget || droptargetP.querySelector('.list');
+
+
+          draggedP.removeChild(dragged);
+          finaltarget.appendChild(dragged);
+          draggedP = undefined;
+          dragged = undefined;
+          droptarget = undefined;
+          droptargetP = undefined;
+          // console.info(draggedP);
+          return tempcount = false
+
+        }
+        // return tempcount++;
+        // tempcount--;
+        // console.info(tempcount);
+
+
+      }
+
 
     }, false);
 
-    target.closest('div').addEventListener("drop", function (event) {
-      // prevent default action (open as link for some elements)
-      event.preventDefault();
-      // move dragged elem to the selected drop target
-      if (event.target.className == "liCard list-group-item") {
-        event.target.style.background = "";
-        console.info('dragged', dragged);
-        targett = event.target;
-        console.info('target', targett);
-        // dragged.parentNode.removeChild(dragged);
-        // event.target.appendChild(dragged);
-      }
+    // target.closest('div').addEventListener("drop", function (event) {
+    /*    document.addEventListener("drop", function (event) {
+     // prevent default action (open as link for some elements)
+     // event.preventDefault();
+     // console.info('works');
+     // move dragged elem to the selected drop target
+     // if (event.target.className == "list") {
+     // if (true) {
+     event.target.style.background = "";
+     console.info('works');
+     // console.info('dragged', dragged);
+     // targett = event.target;
+     // console.info('target', targett);
+     //  dragged.closest('ul').removeChild(dragged);
+     // dragged.parentNode.removeChild(dragged);
+     // droptarget.appendChild(dragged);
+     // }
 
-    }, false);*/
+     }, false);*/
   }
+
   function addListEvents(target) {
     const targetP = target || document;
     // Find the header of a list
@@ -415,6 +461,7 @@
     close();
     listView();
   }
+
   function save() {
     let currentBtn = event.target;
     let modalContent = currentBtn.closest('.modal-content');
@@ -469,6 +516,7 @@
       modal(currentCardID, currentListID);
     }
   }
+
   function modal(currentCardID, currentListID) {
     const memberInModal = `<input class="form-check-input pull-left inputMy" type="checkbox" value="">`;
     // All Lists
@@ -514,7 +562,11 @@
       newmembers.forEach((member) => {
         if (memberInModalElm.textContent === member) {
           modalMemberInput.checked = true;
-        }     });    });  }
+        }
+      });
+    });
+  }
+
   function close() {
     newmembers = [];
     memberchecked = [];
@@ -583,6 +635,7 @@
     MODEL.deleteMemberappData(memberName);
     currentMember.remove();
   }
+
   function toggleBtns() {
     let editBtnMember = event.target;
     let allBtnsofLi = editBtnMember.closest('li').querySelectorAll('.btn');
@@ -682,7 +735,8 @@
 
   function listView() {
     const addListBtnElm = {
-      addListBtnElm:  `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`}
+      addListBtnElm: `<button id="btnClm" class="btn btn-info addlist" type="button"><span>Add a list</span></button>`
+    }
     const lists = MODEL.getLists();
     // console.log('listView', counter++);
     container.innerHTML = addListBtnElm.addListBtnElm;
@@ -692,10 +746,11 @@
       addList(list);
     });
   }
+
   function memberView() {
 
     const member = {
-      member:`<h1 class="membertitle">
+      member: `<h1 class="membertitle">
     Taskboard Members
   </h1><ul class="list-group"><li class="list-group-item member addmember input-group">
       <input type="text" maxlength="25" id="addmemberinput" class="form-control" placeholder="Add new member">
@@ -703,8 +758,9 @@
         <button class="btn btn-primary addmemberbtn" type="button">Add</button>
       </span>
     </li>
-  </ul>`}
-        // console.log('memberView', counter++);
+  </ul>`
+    }
+    // console.log('memberView', counter++);
     container.innerHTML = member.member;
     const addMemberinputElm = document.getElementById('addmemberinput');
     const addMemberBtn = document.querySelector('.addmemberbtn');
@@ -736,6 +792,7 @@
       getMemberData();
     }
   }
+
   appStarter();
 })();
 
