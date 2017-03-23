@@ -318,80 +318,72 @@
     }
 
 
-    container.addEventListener("dragstart", function (event) {
-      // store a ref. on the dragged elem
-      dragged = event.target;
+    container.addEventListener("dragstart", dragStart);
+
+    function dragStart(evt) {
+      dragged = evt.target;
       draggedP = dragged.closest('.list');
       // make it half transparent
       // event.target.style.opacity = .5;
       console.info('start', dragged);
-    }, false);
+    }
 
-    document.addEventListener("dragenter", function (event) {
+
+    container.addEventListener("dragenter", dragEnter);
+
+    function dragEnter(evt) {
       // highlight potential drop target when the draggable element enters it
-      // console.info(event.target);
-      if (event.target.className == "liCard list-group-item" || event.target.className == "listP") {
-        event.target.style.background = "purple";
-        droptarget = event.target.closest('.list');
-        droptargetP = event.target.closest('.listP');
+      if (evt.target.className == "liCard list-group-item") {
+
+        evt.target.style.background = "blue";
+        droptarget = evt.target.closest('.list');
+        droptargetP = evt.target.closest('.listP');
         tempcount = true;
-
-        console.info('target', droptarget);
-
       }
 
-    }, false);
+    }
 
 
-    target.addEventListener("dragleave", function (event) {
+    target.addEventListener("dragleave", dragLeave);
+
+    function dragLeave(event) {
       // reset background of potential drop target when the draggable element leaves it
       if (event.target.className == "liCard list-group-item") {
         event.target.style.background = "";
       }
+    }
 
-    }, false);
 
+    container.addEventListener("dragend", dragEnd);
 
-    container.addEventListener("dragend", function (event) {
+    function dragEnd(event) {
       // reset background of potential drop target when the draggable element leaves it
-      // console.info(event.currentTarget);
       if (event.target.className == "liCard list-group-item") {
         event.target.style.background = "";
-        // console.info('this is the target', event.target);
-        // console.info('works');
-        // dragged.closest('ul').removeChild(dragged);
-        temp();
-        // tempcount = true;
-
+        dragEndHandler();
       }
+    }
 
-      function temp() {
-        // console.info('im here');
-
-        if (tempcount) {
-          // console.info(tempcount);
-          let finaltarget = droptarget || droptargetP.querySelector('.list');
-
-
-          draggedP.removeChild(dragged);
-          finaltarget.appendChild(dragged);
-          draggedP = undefined;
-          dragged = undefined;
-          droptarget = undefined;
-          droptargetP = undefined;
-          // console.info(draggedP);
-          return tempcount = false
-
+    function dragEndHandler() {
+      if (tempcount) {
+        let finaltarget = droptarget || droptargetP.querySelector('.list') || undefined;
+// if you drag the card to undefined place in the DOM, do nothing
+        if (!(finaltarget === undefined)) {
+          let dragedList = draggedP.closest('.list-column');
+          let dropTargetList = droptarget.closest('.list-column');
+          // if you drag the card to the same list do nothing
+          if (!(dragedList === dropTargetList)) {
+            draggedP.removeChild(dragged);
+            finaltarget.appendChild(dragged);
+            draggedP = undefined;
+            dragged = undefined;
+            droptarget = undefined;
+            droptargetP = undefined;
+            return tempcount = false
+          }
         }
-        // return tempcount++;
-        // tempcount--;
-        // console.info(tempcount);
-
-
       }
-
-
-    }, false);
+    }
 
     // target.closest('div').addEventListener("drop", function (event) {
     /*    document.addEventListener("drop", function (event) {
